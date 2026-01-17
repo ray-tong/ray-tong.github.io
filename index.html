@@ -1,1 +1,405 @@
-Hello World!
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAGFlow Architecture - C4 Model</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #333;
+            margin: 0;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 14px;
+            cursor: pointer;
+            background: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #0052a3;
+        }
+
+        button.active {
+            background: #004080;
+        }
+
+        #diagram {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 0 auto;
+        }
+
+        .node {
+            cursor: pointer;
+        }
+
+        .node rect {
+            stroke-width: 2px;
+        }
+
+        .person rect {
+            fill: #08427b;
+            stroke: #052e56;
+        }
+
+        .system rect {
+            fill: #1168bd;
+            stroke: #0b4884;
+        }
+
+        .external rect {
+            fill: #999999;
+            stroke: #707070;
+        }
+
+        .container rect {
+            fill: #438dd5;
+            stroke: #2e5f8d;
+        }
+
+        .database rect {
+            fill: #438dd5;
+            stroke: #2e5f8d;
+        }
+
+        .node text {
+            fill: white;
+            font-size: 14px;
+            font-weight: 500;
+            pointer-events: none;
+        }
+
+        .node .tech-label {
+            font-size: 11px;
+            font-style: italic;
+            font-weight: normal;
+            fill: #e0e0e0;
+        }
+
+        .node .description {
+            font-size: 11px;
+            font-weight: normal;
+            fill: #f0f0f0;
+        }
+
+        .link {
+            fill: none;
+            stroke: #707070;
+            stroke-width: 2px;
+            marker-end: url(#arrowhead);
+        }
+
+        .link-label {
+            font-size: 11px;
+            fill: #333;
+            background: white;
+            padding: 2px 4px;
+        }
+
+        .legend {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .legend-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .legend-item {
+            display: inline-block;
+            margin-right: 20px;
+            margin-bottom: 5px;
+        }
+
+        .legend-color {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            vertical-align: middle;
+            border: 2px solid #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>RAGFlow Architecture Diagram</h1>
+        <div class="subtitle">C4 Model - System Context & Container Views</div>
+    </div>
+
+    <div class="controls">
+        <button id="contextBtn" class="active" onclick="showContext()">System Context</button>
+        <button id="containerBtn" onclick="showContainer()">Container Diagram</button>
+    </div>
+
+    <svg id="diagram"></svg>
+
+    <div class="legend">
+        <div class="legend-title">Legend</div>
+        <div class="legend-item">
+            <span class="legend-color" style="background: #08427b; border-color: #052e56;"></span>
+            <span>Person</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-color" style="background: #1168bd; border-color: #0b4884;"></span>
+            <span>Internal System</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-color" style="background: #999999; border-color: #707070;"></span>
+            <span>External System</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-color" style="background: #438dd5; border-color: #2e5f8d;"></span>
+            <span>Container/Database</span>
+        </div>
+    </div>
+
+    <script>
+        // System Context Data
+        const contextData = {
+            nodes: [
+                { id: 'user', label: 'End User', type: 'person', tech: '', description: 'Uses RAGFlow for\nQA and document analysis', x: 400, y: 50 },
+                { id: 'developer', label: 'Developer', type: 'person', tech: '', description: 'Integrates RAGFlow\nvia API/SDK', x: 100, y: 50 },
+                { id: 'admin', label: 'Administrator', type: 'person', tech: '', description: 'Manages system\nand users', x: 700, y: 50 },
+
+                { id: 'ragflow', label: 'RAGFlow', type: 'system', tech: 'Python, React, TypeScript', description: 'RAG engine with deep document\nunderstanding and agent capabilities', x: 400, y: 250 },
+
+                { id: 'llm', label: 'LLM Providers', type: 'external', tech: 'OpenAI, Anthropic, etc.', description: 'Large language models for\ngeneration and reasoning', x: 100, y: 450 },
+                { id: 'embedding', label: 'Embedding Services', type: 'external', tech: 'OpenAI, Voyage, etc.', description: 'Text embedding models for\nvector generation', x: 300, y: 450 },
+                { id: 'cloud', label: 'Cloud Storage', type: 'external', tech: 'Azure Blob, MinIO, S3', description: 'Object storage for\ndocuments and files', x: 500, y: 450 },
+                { id: 'search', label: 'Search Services', type: 'external', tech: 'Azure AI Search, ES', description: 'Full-text and vector\nsearch capabilities', x: 700, y: 450 }
+            ],
+            links: [
+                { source: 'user', target: 'ragflow', label: 'Uses web interface' },
+                { source: 'developer', target: 'ragflow', label: 'API calls\n[HTTPS/REST]' },
+                { source: 'admin', target: 'ragflow', label: 'Configures system' },
+
+                { source: 'ragflow', target: 'llm', label: 'Generation requests\n[HTTPS]' },
+                { source: 'ragflow', target: 'embedding', label: 'Embedding requests\n[HTTPS]' },
+                { source: 'ragflow', target: 'cloud', label: 'Stores/retrieves files\n[HTTPS]' },
+                { source: 'ragflow', target: 'search', label: 'Index & search\n[HTTPS]' }
+            ]
+        };
+
+        // Container Data
+        const containerData = {
+            nodes: [
+                { id: 'user', label: 'User', type: 'person', tech: '', description: 'RAGFlow user', x: 400, y: 30 },
+
+                { id: 'web', label: 'Web Application', type: 'container', tech: 'React 18, TypeScript, Umi.js', description: 'Provides UI for document\nmanagement, chat, and agents', x: 400, y: 150 },
+
+                { id: 'api', label: 'API Server', type: 'container', tech: 'Python, Flask', description: 'REST API for all RAGFlow\nfunctionality', x: 200, y: 300 },
+                { id: 'executor', label: 'Task Executors', type: 'container', tech: 'Python, Multi-worker', description: 'Background processing:\nparsing, embedding, indexing', x: 600, y: 300 },
+
+                { id: 'deepdoc', label: 'DeepDoc Engine', type: 'container', tech: 'Python, CV Models', description: 'OCR, layout recognition,\ntable structure recognition', x: 400, y: 450 },
+                { id: 'agent', label: 'Agent Engine', type: 'container', tech: 'Python, Canvas', description: 'Agentic workflows and\nMCP integration', x: 700, y: 450 },
+
+                { id: 'mysql', label: 'MySQL', type: 'database', tech: 'Relational Database', description: 'Stores metadata, users,\nknowledge bases', x: 50, y: 550 },
+                { id: 'redis', label: 'Redis', type: 'database', tech: 'In-Memory Cache', description: 'Session and cache\nmanagement', x: 200, y: 550 },
+                { id: 'minio', label: 'MinIO', type: 'database', tech: 'Object Storage', description: 'Document and file\nstorage', x: 350, y: 550 },
+                { id: 'searchdb', label: 'Search Engine', type: 'database', tech: 'Azure AI Search/ES', description: 'Full-text and vector\nindexing', x: 500, y: 550 },
+
+                { id: 'llm', label: 'LLM APIs', type: 'external', tech: 'External Services', description: 'OpenAI, Anthropic, etc.', x: 100, y: 700 },
+                { id: 'embedding', label: 'Embedding APIs', type: 'external', tech: 'External Services', description: 'Vector generation', x: 350, y: 700 }
+            ],
+            links: [
+                { source: 'user', target: 'web', label: 'Uses\n[HTTPS]' },
+                { source: 'web', target: 'api', label: 'API calls\n[REST/JSON]' },
+
+                { source: 'api', target: 'executor', label: 'Queue tasks\n[Redis]' },
+                { source: 'api', target: 'mysql', label: 'Read/Write\n[SQL]' },
+                { source: 'api', target: 'redis', label: 'Cache\n[Redis Protocol]' },
+                { source: 'api', target: 'minio', label: 'Store files\n[S3 API]' },
+
+                { source: 'executor', target: 'deepdoc', label: 'Parse docs' },
+                { source: 'executor', target: 'agent', label: 'Run agents' },
+                { source: 'executor', target: 'searchdb', label: 'Index\n[HTTPS]' },
+                { source: 'executor', target: 'mysql', label: 'Update status' },
+                { source: 'executor', target: 'minio', label: 'Retrieve files' },
+
+                { source: 'api', target: 'llm', label: 'Generation\n[HTTPS]' },
+                { source: 'executor', target: 'embedding', label: 'Embed text\n[HTTPS]' },
+                { source: 'api', target: 'searchdb', label: 'Search\n[HTTPS]' }
+            ]
+        };
+
+        let currentView = 'context';
+
+        function showContext() {
+            currentView = 'context';
+            document.getElementById('contextBtn').classList.add('active');
+            document.getElementById('containerBtn').classList.remove('active');
+            renderDiagram(contextData);
+        }
+
+        function showContainer() {
+            currentView = 'container';
+            document.getElementById('containerBtn').classList.add('active');
+            document.getElementById('contextBtn').classList.remove('active');
+            renderDiagram(containerData);
+        }
+
+        function renderDiagram(data) {
+            const svg = d3.select('#diagram');
+            svg.selectAll('*').remove();
+
+            const width = 900;
+            const height = currentView === 'context' ? 550 : 750;
+
+            svg.attr('width', width)
+               .attr('height', height);
+
+            // Define arrow marker
+            svg.append('defs').append('marker')
+                .attr('id', 'arrowhead')
+                .attr('markerWidth', 10)
+                .attr('markerHeight', 10)
+                .attr('refX', 8)
+                .attr('refY', 3)
+                .attr('orient', 'auto')
+                .append('polygon')
+                .attr('points', '0 0, 10 3, 0 6')
+                .attr('fill', '#707070');
+
+            // Draw links
+            const links = svg.append('g').selectAll('path')
+                .data(data.links)
+                .enter();
+
+            links.append('path')
+                .attr('class', 'link')
+                .attr('d', d => {
+                    const source = data.nodes.find(n => n.id === d.source);
+                    const target = data.nodes.find(n => n.id === d.target);
+
+                    // Calculate the angle between source and target
+                    const dx = target.x - source.x;
+                    const dy = target.y - source.y;
+                    const angle = Math.atan2(dy, dx);
+
+                    // Offset from center based on box size
+                    const sourceOffsetX = Math.cos(angle) * 70;
+                    const sourceOffsetY = Math.sin(angle) * 40;
+                    const targetOffsetX = Math.cos(angle) * 70;
+                    const targetOffsetY = Math.sin(angle) * 40;
+
+                    const x1 = source.x + sourceOffsetX;
+                    const y1 = source.y + sourceOffsetY;
+                    const x2 = target.x - targetOffsetX;
+                    const y2 = target.y - targetOffsetY;
+
+                    return `M ${x1},${y1} L ${x2},${y2}`;
+                });
+
+            // Draw link labels
+            links.append('text')
+                .attr('class', 'link-label')
+                .attr('x', d => {
+                    const source = data.nodes.find(n => n.id === d.source);
+                    const target = data.nodes.find(n => n.id === d.target);
+                    return (source.x + target.x) / 2;
+                })
+                .attr('y', d => {
+                    const source = data.nodes.find(n => n.id === d.source);
+                    const target = data.nodes.find(n => n.id === d.target);
+                    return (source.y + target.y) / 2 - 5;
+                })
+                .attr('text-anchor', 'middle')
+                .selectAll('tspan')
+                .data(d => d.label.split('\n'))
+                .enter()
+                .append('tspan')
+                .attr('x', function() {
+                    const d = d3.select(this.parentNode).datum();
+                    const source = data.nodes.find(n => n.id === d.source);
+                    const target = data.nodes.find(n => n.id === d.target);
+                    return (source.x + target.x) / 2;
+                })
+                .attr('dy', (d, i) => i === 0 ? 0 : '1.1em')
+                .text(d => d);
+
+            // Draw nodes
+            const nodes = svg.append('g').selectAll('g')
+                .data(data.nodes)
+                .enter()
+                .append('g')
+                .attr('class', d => `node ${d.type}`)
+                .attr('transform', d => `translate(${d.x}, ${d.y})`);
+
+            // Add rectangles
+            nodes.append('rect')
+                .attr('x', -70)
+                .attr('y', -35)
+                .attr('width', 140)
+                .attr('height', 70)
+                .attr('rx', 5);
+
+            // Add main labels
+            nodes.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('y', -15)
+                .text(d => d.label);
+
+            // Add tech labels
+            nodes.filter(d => d.tech)
+                .append('text')
+                .attr('class', 'tech-label')
+                .attr('text-anchor', 'middle')
+                .attr('y', 0)
+                .text(d => `[${d.tech}]`);
+
+            // Add descriptions
+            nodes.append('text')
+                .attr('class', 'description')
+                .attr('text-anchor', 'middle')
+                .attr('y', 10)
+                .selectAll('tspan')
+                .data(d => d.description.split('\n'))
+                .enter()
+                .append('tspan')
+                .attr('x', 0)
+                .attr('dy', (d, i) => i === 0 ? '0.6em' : '1em')
+                .text(d => d);
+        }
+
+        // Initial render
+        showContext();
+    </script>
+</body>
+</html>
