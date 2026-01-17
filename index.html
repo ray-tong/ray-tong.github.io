@@ -3,734 +3,758 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RAGFlow Architecture - C4 Model</title>
+    <title>RAGFLOW C4 Architecture Diagram</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e3e8ef 100%);
-            overflow-x: hidden;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            overflow: hidden;
         }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        h1 {
-            color: #2c3e50;
-            margin: 0;
-            font-size: clamp(24px, 5vw, 36px);
-        }
-
-        .subtitle {
-            color: #7f8c8d;
-            margin-top: 10px;
-            font-size: clamp(12px, 3vw, 16px);
-        }
-
-        .controls {
-            text-align: center;
-            margin-bottom: 20px;
+        #container {
+            width: 100vw;
+            height: 100vh;
             display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
+            flex-direction: column;
         }
 
-        button {
-            padding: 12px 24px;
-            font-size: 14px;
-            cursor: pointer;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        #header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 30px;
             color: white;
-            border: none;
-            border-radius: 8px;
-            transition: all 0.3s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #header h1 {
+            font-size: 24px;
             font-weight: 600;
         }
 
-        button:hover {
+        #controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
             transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
         }
 
-        button.active {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        .btn.active {
+            background: #4CAF50;
+            border-color: #4CAF50;
         }
 
-        button.reset-zoom {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-
-        #diagram-container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
+        #svg-container {
+            flex: 1;
             position: relative;
-            width: 100%;
-            margin: 0 auto;
+            overflow: hidden;
         }
 
-        #diagram {
-            display: block;
+        svg {
             width: 100%;
-            height: auto;
+            height: 100%;
+            cursor: grab;
+        }
+
+        svg:active {
+            cursor: grabbing;
         }
 
         .node {
             cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .node:hover {
-            filter: brightness(1.1);
-        }
-
-        .node.highlighted {
-            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8));
+            transition: all 0.3s ease;
         }
 
         .node rect {
-            stroke-width: 2px;
-            transition: all 0.3s;
+            stroke-width: 2;
+            rx: 8;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
         }
 
         .node:hover rect {
-            stroke-width: 3px;
-            filter: brightness(1.1);
-        }
-
-        .person rect {
-            fill: url(#personGradient);
-            stroke: #052e56;
-        }
-
-        .system rect {
-            fill: url(#systemGradient);
-            stroke: #0b4884;
-        }
-
-        .external rect {
-            fill: url(#externalGradient);
-            stroke: #707070;
-        }
-
-        .container rect {
-            fill: url(#containerGradient);
-            stroke: #2e5f8d;
-        }
-
-        .database rect {
-            fill: url(#databaseGradient);
-            stroke: #2e5f8d;
+            filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.5));
+            stroke-width: 3;
         }
 
         .node text {
-            fill: white;
-            font-size: 14px;
-            font-weight: 600;
             pointer-events: none;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            user-select: none;
         }
 
-        .node .tech-label {
-            font-size: 10px;
-            font-style: italic;
-            font-weight: normal;
-            fill: #e8e8e8;
+        .node .title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .node .subtitle {
+            font-size: 11px;
+            opacity: 0.9;
         }
 
         .node .description {
             font-size: 10px;
-            font-weight: normal;
-            fill: #f5f5f5;
+            opacity: 0.8;
         }
 
         .link {
             fill: none;
-            stroke: #95a5a6;
-            stroke-width: 2px;
-            marker-end: url(#arrowhead);
+            stroke-width: 2;
             opacity: 0.6;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
-        .link:hover,
-        .link.highlighted {
-            stroke: #e74c3c;
-            stroke-width: 3px;
+        .link:hover {
             opacity: 1;
+            stroke-width: 3;
         }
 
         .link-label {
-            font-size: 11px;
-            fill: #34495e;
+            font-size: 10px;
+            fill: white;
+            text-anchor: middle;
             pointer-events: none;
             opacity: 0.8;
         }
 
-        .link-label-bg {
-            fill: white;
-            opacity: 0.9;
-            rx: 3;
-        }
-
-        .tooltip {
-            position: absolute;
-            background: rgba(44, 62, 80, 0.95);
+        #breadcrumb {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 30px;
             color: white;
-            padding: 12px 16px;
-            border-radius: 8px;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 13px;
-            line-height: 1.6;
-            max-width: 300px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            z-index: 1000;
-        }
-
-        .tooltip.visible {
-            opacity: 1;
-        }
-
-        .tooltip-title {
-            font-weight: bold;
-            margin-bottom: 6px;
             font-size: 14px;
-            color: #3498db;
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .legend {
-            margin-top: 30px;
-            padding: 20px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        #breadcrumb span {
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 3px;
+            transition: background 0.2s ease;
         }
 
-        .legend-title {
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: #2c3e50;
-            font-size: 16px;
+        #breadcrumb span:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
 
-        .legend-items {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
+        #breadcrumb .separator {
+            margin: 0 5px;
+            cursor: default;
+        }
+
+        #legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 8px;
+            color: white;
+            font-size: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 250px;
+        }
+
+        #legend h3 {
+            margin-bottom: 10px;
+            font-size: 14px;
         }
 
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 8px;
+            margin: 8px 0;
         }
 
         .legend-color {
-            width: 24px;
-            height: 24px;
-            border: 2px solid #34495e;
+            width: 30px;
+            height: 20px;
             border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-right: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
-        .info-panel {
-            margin-top: 20px;
-            padding: 15px;
-            background: #ecf0f1;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 13px;
-            color: #7f8c8d;
+        #tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            pointer-events: none;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            max-width: 300px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            z-index: 1000;
+        }
+
+        #search-box {
+            padding: 8px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 5px;
+            font-size: 14px;
+            width: 200px;
+        }
+
+        #search-box::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .highlight {
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
         @media (max-width: 768px) {
-            body {
+            #header {
+                flex-direction: column;
+                gap: 10px;
                 padding: 10px;
             }
 
-            h1 {
-                font-size: 24px;
+            #header h1 {
+                font-size: 18px;
             }
 
-            .subtitle {
+            #controls {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .btn {
+                padding: 6px 12px;
                 font-size: 12px;
             }
 
-            button {
-                padding: 10px 16px;
-                font-size: 12px;
+            #legend {
+                font-size: 10px;
+                padding: 10px;
+                max-width: 150px;
             }
 
-            .legend-items {
-                flex-direction: column;
+            #search-box {
+                width: 150px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>RAGFlow Architecture Diagram</h1>
-            <div class="subtitle">C4 Model - Interactive System Context & Container Views</div>
-        </div>
-
-        <div class="controls">
-            <button id="contextBtn" class="active" onclick="showContext()">📊 System Context</button>
-            <button id="containerBtn" onclick="showContainer()">🏗️ Container Diagram</button>
-            <button class="reset-zoom" onclick="resetZoom()">🔍 Reset Zoom</button>
-        </div>
-
-        <div id="diagram-container">
-            <svg id="diagram"></svg>
-        </div>
-
-        <div class="info-panel">
-            💡 <strong>Tip:</strong> Hover over components for details • Click nodes to highlight connections • Scroll to zoom • Drag to pan
-        </div>
-
-        <div class="legend">
-            <div class="legend-title">Legend</div>
-            <div class="legend-items">
-                <div class="legend-item">
-                    <div class="legend-color" style="background: linear-gradient(135deg, #08427b 0%, #0a5694 100%);"></div>
-                    <span>Person</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: linear-gradient(135deg, #1168bd 0%, #1a7fd4 100%);"></div>
-                    <span>Internal System</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: linear-gradient(135deg, #999999 0%, #aaaaaa 100%);"></div>
-                    <span>External System</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: linear-gradient(135deg, #438dd5 0%, #5ca5e8 100%);"></div>
-                    <span>Container/Database</span>
-                </div>
+    <div id="container">
+        <div id="header">
+            <h1>🏗️ RAGFLOW C4 Architecture Diagram</h1>
+            <div id="controls">
+                <input type="text" id="search-box" placeholder="Search nodes...">
+                <button class="btn active" id="btn-container" onclick="showLevel('container')">Container</button>
+                <button class="btn" id="btn-component" onclick="showLevel('component')">Component</button>
+                <button class="btn" id="btn-code" onclick="showLevel('code')">Code</button>
+                <button class="btn" onclick="resetView()">Reset View</button>
+                <button class="btn" onclick="fitToScreen()">Fit Screen</button>
             </div>
         </div>
-
-        <div class="tooltip" id="tooltip"></div>
+        <div id="svg-container">
+            <svg id="diagram"></svg>
+            <div id="legend">
+                <h3>Legend</h3>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #4A90E2;"></div>
+                    <span>Frontend/UI</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #50E3C2;"></div>
+                    <span>Backend/API</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #F5A623;"></div>
+                    <span>Database</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #BD10E0;"></div>
+                    <span>External Service</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #7ED321;"></div>
+                    <span>Storage</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #E74C3C;"></div>
+                    <span>Cache/Queue</span>
+                </div>
+            </div>
+            <div id="tooltip"></div>
+        </div>
+        <div id="breadcrumb">
+            <span onclick="showLevel('container')">Container Level</span>
+        </div>
     </div>
 
     <script>
-        // System Context Data
-        const contextData = {
-            nodes: [
-                { id: 'user', label: 'End User', type: 'person', tech: '', description: 'Uses RAGFlow for\nQA and document analysis', details: 'Interacts with the web interface to upload documents, ask questions, and get AI-powered answers.', x: 400, y: 80 },
-                { id: 'developer', label: 'Developer', type: 'person', tech: '', description: 'Integrates RAGFlow\nvia API/SDK', details: 'Uses REST API or Python SDK to integrate RAGFlow into their applications.', x: 100, y: 80 },
-                { id: 'admin', label: 'Administrator', type: 'person', tech: '', description: 'Manages system\nand users', details: 'Configures LLM providers, manages users, and monitors system health.', x: 700, y: 80 },
+        // Architecture Data
+        const architectureData = {
+            container: {
+                nodes: [
+                    { id: 'user', label: 'Users', type: 'person', tech: 'Web Browser', description: 'End users accessing RAGFLOW', color: '#9B9B9B' },
+                    { id: 'frontend', label: 'Web Frontend', type: 'container', tech: 'React 18.2, UMI 4.0', description: 'Interactive UI for chat, agents, knowledge base management', color: '#4A90E2', hasChildren: true },
+                    { id: 'backend', label: 'Backend API Server', type: 'container', tech: 'Flask 3.0, Python', description: 'REST API for RAG operations, document processing, LLM orchestration', color: '#50E3C2', hasChildren: true },
+                    { id: 'mysql', label: 'MySQL Database', type: 'database', tech: 'MySQL 8.0', description: 'Stores users, documents, conversations, configurations', color: '#F5A623' },
+                    { id: 'redis', label: 'Redis Cache', type: 'cache', tech: 'Redis/Valkey 8', description: 'Session storage, caching, task queue', color: '#E74C3C' },
+                    { id: 'search', label: 'Search Engine', type: 'database', tech: 'Elasticsearch/OpenSearch/Infinity', description: 'Vector search and full-text retrieval', color: '#F5A623' },
+                    { id: 'storage', label: 'Object Storage', type: 'storage', tech: 'MinIO/S3/Azure Blob', description: 'Document and file storage', color: '#7ED321' },
+                    { id: 'sandbox', label: 'Sandbox Executor', type: 'container', tech: 'Python/Node.js Docker', description: 'Isolated code execution for agents', color: '#50E3C2' },
+                    { id: 'llm', label: 'LLM Providers', type: 'external', tech: 'OpenAI/Azure/Anthropic/30+ providers', description: 'Chat, embedding, reranking models', color: '#BD10E0' },
+                ],
+                links: [
+                    { source: 'user', target: 'frontend', label: 'Uses', color: '#4A90E2' },
+                    { source: 'frontend', target: 'backend', label: 'API Calls', color: '#50E3C2' },
+                    { source: 'backend', target: 'mysql', label: 'Read/Write', color: '#F5A623' },
+                    { source: 'backend', target: 'redis', label: 'Cache', color: '#E74C3C' },
+                    { source: 'backend', target: 'search', label: 'Vector Search', color: '#F5A623' },
+                    { source: 'backend', target: 'storage', label: 'Store/Retrieve', color: '#7ED321' },
+                    { source: 'backend', target: 'sandbox', label: 'Execute Code', color: '#50E3C2' },
+                    { source: 'backend', target: 'llm', label: 'LLM Calls', color: '#BD10E0' },
+                ]
+            },
+            component: {
+                nodes: [
+                    // Frontend Components
+                    { id: 'ui-pages', label: 'Page Components', type: 'component', tech: 'React Pages', description: 'Chat, Agent Canvas, Dataset, Search pages', color: '#4A90E2', parent: 'frontend', hasChildren: true },
+                    { id: 'ui-components', label: 'Reusable Components', type: 'component', tech: 'React Components', description: 'File upload, forms, modals, widgets', color: '#4A90E2', parent: 'frontend' },
+                    { id: 'ui-services', label: 'API Services', type: 'component', tech: 'Axios/React Query', description: 'API client layer for backend communication', color: '#4A90E2', parent: 'frontend' },
+                    { id: 'ui-state', label: 'State Management', type: 'component', tech: 'Zustand', description: 'Global state and data flow', color: '#4A90E2', parent: 'frontend' },
 
-                { id: 'ragflow', label: 'RAGFlow', type: 'system', tech: 'Python, React, TypeScript', description: 'RAG engine with deep document\nunderstanding and agent capabilities', details: 'Core RAG system providing document parsing, embedding, retrieval, and generation capabilities.', x: 400, y: 280 },
+                    // Backend API Components
+                    { id: 'api-apps', label: 'API Applications', type: 'component', tech: 'Flask Apps', description: 'User, Dialog, KB, Document, Agent APIs', color: '#50E3C2', parent: 'backend', hasChildren: true },
+                    { id: 'services', label: 'Service Layer', type: 'component', tech: 'Python Services', description: 'Business logic and orchestration', color: '#50E3C2', parent: 'backend', hasChildren: true },
+                    { id: 'rag-engine', label: 'RAG Engine', type: 'component', tech: 'Python', description: 'Document parsing, chunking, embedding pipeline', color: '#50E3C2', parent: 'backend', hasChildren: true },
+                    { id: 'agent-engine', label: 'Agent/Workflow Engine', type: 'component', tech: 'Python', description: 'Canvas-based agentic reasoning with tools', color: '#50E3C2', parent: 'backend', hasChildren: true },
+                    { id: 'graph-rag', label: 'Graph RAG', type: 'component', tech: 'Python', description: 'Knowledge graph extraction and reasoning', color: '#50E3C2', parent: 'backend' },
+                    { id: 'deep-doc', label: 'Deep Document Understanding', type: 'component', tech: 'Python', description: 'Advanced document parsing and vision', color: '#50E3C2', parent: 'backend' },
+                    { id: 'agentic-reasoning', label: 'Agentic Reasoning', type: 'component', tech: 'Python', description: 'Deep research agent capabilities', color: '#50E3C2', parent: 'backend' },
+                    { id: 'db-models', label: 'Database Models', type: 'component', tech: 'Peewee ORM', description: 'User, Document, File, Task, Dialog models', color: '#50E3C2', parent: 'backend', hasChildren: true },
+                ],
+                links: [
+                    { source: 'ui-pages', target: 'ui-components', label: 'Uses', color: '#4A90E2' },
+                    { source: 'ui-pages', target: 'ui-services', label: 'API Calls', color: '#4A90E2' },
+                    { source: 'ui-pages', target: 'ui-state', label: 'State', color: '#4A90E2' },
+                    { source: 'ui-services', target: 'api-apps', label: 'HTTP', color: '#50E3C2' },
 
-                { id: 'llm', label: 'LLM Providers', type: 'external', tech: 'OpenAI, Anthropic, etc.', description: 'Large language models for\ngeneration and reasoning', details: 'External LLM services like OpenAI GPT-4, Anthropic Claude, DeepSeek, etc.', x: 100, y: 480 },
-                { id: 'embedding', label: 'Embedding Services', type: 'external', tech: 'OpenAI, Voyage, etc.', description: 'Text embedding models for\nvector generation', details: 'Convert text into vector representations for semantic search.', x: 300, y: 480 },
-                { id: 'cloud', label: 'Cloud Storage', type: 'external', tech: 'Azure Blob, MinIO, S3', description: 'Object storage for\ndocuments and files', details: 'Stores uploaded documents and processed files.', x: 500, y: 480 },
-                { id: 'search', label: 'Search Services', type: 'external', tech: 'Azure AI Search, ES', description: 'Full-text and vector\nsearch capabilities', details: 'Provides hybrid search combining full-text and semantic vector search.', x: 700, y: 480 }
-            ],
-            links: [
-                { source: 'user', target: 'ragflow', label: 'Uses web interface', curve: 0 },
-                { source: 'developer', target: 'ragflow', label: 'API calls\n[HTTPS/REST]', curve: 20 },
-                { source: 'admin', target: 'ragflow', label: 'Configures system', curve: -20 },
+                    { source: 'api-apps', target: 'services', label: 'Delegates', color: '#50E3C2' },
+                    { source: 'services', target: 'rag-engine', label: 'RAG Pipeline', color: '#50E3C2' },
+                    { source: 'services', target: 'agent-engine', label: 'Agent Exec', color: '#50E3C2' },
+                    { source: 'services', target: 'graph-rag', label: 'Graph Search', color: '#50E3C2' },
+                    { source: 'services', target: 'deep-doc', label: 'Parse Docs', color: '#50E3C2' },
+                    { source: 'services', target: 'agentic-reasoning', label: 'Research', color: '#50E3C2' },
+                    { source: 'services', target: 'db-models', label: 'CRUD', color: '#50E3C2' },
 
-                { source: 'ragflow', target: 'llm', label: 'Generation requests\n[HTTPS]', curve: -30 },
-                { source: 'ragflow', target: 'embedding', label: 'Embedding requests\n[HTTPS]', curve: -15 },
-                { source: 'ragflow', target: 'cloud', label: 'Stores/retrieves files\n[HTTPS]', curve: 15 },
-                { source: 'ragflow', target: 'search', label: 'Index & search\n[HTTPS]', curve: 30 }
-            ]
+                    { source: 'rag-engine', target: 'llm', label: 'Embeddings', color: '#BD10E0' },
+                    { source: 'agent-engine', target: 'llm', label: 'LLM Calls', color: '#BD10E0' },
+                    { source: 'agent-engine', target: 'sandbox', label: 'Code Exec', color: '#50E3C2' },
+                    { source: 'rag-engine', target: 'search', label: 'Index', color: '#F5A623' },
+                    { source: 'db-models', target: 'mysql', label: 'SQL', color: '#F5A623' },
+                    { source: 'services', target: 'redis', label: 'Cache', color: '#E74C3C' },
+                ]
+            },
+            code: {
+                nodes: [
+                    // Frontend Code
+                    { id: 'page-chat', label: 'Chat Page', type: 'code', tech: 'pages/chat/', description: 'Conversation interface with RAG', color: '#4A90E2', parent: 'ui-pages' },
+                    { id: 'page-agent', label: 'Agent Canvas Page', type: 'code', tech: 'pages/agent/', description: 'Visual workflow builder', color: '#4A90E2', parent: 'ui-pages' },
+                    { id: 'page-dataset', label: 'Dataset Page', type: 'code', tech: 'pages/dataset/', description: 'Knowledge base management', color: '#4A90E2', parent: 'ui-pages' },
+                    { id: 'page-flow', label: 'Flow Page', type: 'code', tech: 'pages/flow/', description: 'Data flow workflows', color: '#4A90E2', parent: 'ui-pages' },
+
+                    // Backend API Apps
+                    { id: 'app-user', label: 'user_app.py', type: 'code', tech: 'User Auth API', description: 'Login, registration, profile management', color: '#50E3C2', parent: 'api-apps' },
+                    { id: 'app-dialog', label: 'dialog_app.py', type: 'code', tech: 'Chat API', description: 'Conversation and message endpoints', color: '#50E3C2', parent: 'api-apps' },
+                    { id: 'app-kb', label: 'kb_app.py', type: 'code', tech: 'Knowledge Base API', description: 'KB CRUD operations', color: '#50E3C2', parent: 'api-apps' },
+                    { id: 'app-document', label: 'document_app.py', type: 'code', tech: 'Document API', description: 'Document upload and processing', color: '#50E3C2', parent: 'api-apps' },
+                    { id: 'app-canvas', label: 'canvas_app.py', type: 'code', tech: 'Agent Canvas API', description: 'Agent workflow operations', color: '#50E3C2', parent: 'api-apps' },
+
+                    // Service Layer
+                    { id: 'svc-dialog', label: 'DialogService', type: 'code', tech: 'dialog_service.py', description: 'Chat orchestration and RAG logic', color: '#50E3C2', parent: 'services' },
+                    { id: 'svc-document', label: 'DocumentService', type: 'code', tech: 'document_service.py', description: 'Document lifecycle management', color: '#50E3C2', parent: 'services' },
+                    { id: 'svc-kb', label: 'KnowledgebaseService', type: 'code', tech: 'knowledgebase_service.py', description: 'KB operations', color: '#50E3C2', parent: 'services' },
+                    { id: 'svc-llm', label: 'LLMService', type: 'code', tech: 'llm_service.py', description: 'LLM wrapper and streaming', color: '#50E3C2', parent: 'services' },
+                    { id: 'svc-canvas', label: 'CanvasService', type: 'code', tech: 'canvas_service.py', description: 'Agent workflow execution', color: '#50E3C2', parent: 'services' },
+
+                    // RAG Engine
+                    { id: 'rag-parser', label: 'Document Parsers', type: 'code', tech: 'rag/app/', description: 'naive, qa, paper, table, book parsers', color: '#50E3C2', parent: 'rag-engine' },
+                    { id: 'rag-pipeline', label: 'RAG Pipeline', type: 'code', tech: 'rag/flow/pipeline.py', description: 'Chunking, tokenization, embedding flow', color: '#50E3C2', parent: 'rag-engine' },
+                    { id: 'rag-llm', label: 'LLM Models', type: 'code', tech: 'rag/llm/chat_model.py', description: '30+ LLM provider implementations', color: '#50E3C2', parent: 'rag-engine' },
+                    { id: 'rag-embedding', label: 'Embedding Models', type: 'code', tech: 'rag/llm/embedding_model.py', description: 'Text embedding implementations', color: '#50E3C2', parent: 'rag-engine' },
+                    { id: 'rag-rerank', label: 'Rerank Models', type: 'code', tech: 'rag/llm/rerank_model.py', description: 'Result re-ranking models', color: '#50E3C2', parent: 'rag-engine' },
+
+                    // Agent Engine
+                    { id: 'agent-canvas', label: 'Canvas', type: 'code', tech: 'agent/canvas.py', description: 'Visual workflow execution engine', color: '#50E3C2', parent: 'agent-engine' },
+                    { id: 'agent-components', label: 'Components', type: 'code', tech: 'agent/component/', description: 'LLM, Tool, Switch, Iteration components', color: '#50E3C2', parent: 'agent-engine' },
+                    { id: 'agent-tools', label: 'Agent Tools', type: 'code', tech: 'agent/tools/', description: 'Retrieval, code exec, web search, SQL tools', color: '#50E3C2', parent: 'agent-engine' },
+
+                    // Database Models
+                    { id: 'model-user', label: 'User', type: 'code', tech: 'db_models.py', description: 'User authentication and profiles', color: '#50E3C2', parent: 'db-models' },
+                    { id: 'model-tenant', label: 'Tenant', type: 'code', tech: 'db_models.py', description: 'Multi-tenancy support', color: '#50E3C2', parent: 'db-models' },
+                    { id: 'model-kb', label: 'Knowledgebase', type: 'code', tech: 'db_models.py', description: 'Knowledge base metadata', color: '#50E3C2', parent: 'db-models' },
+                    { id: 'model-document', label: 'Document', type: 'code', tech: 'db_models.py', description: 'Document records and processing status', color: '#50E3C2', parent: 'db-models' },
+                    { id: 'model-file', label: 'File', type: 'code', tech: 'db_models.py', description: 'File storage references', color: '#50E3C2', parent: 'db-models' },
+                    { id: 'model-dialog', label: 'Dialog', type: 'code', tech: 'db_models.py', description: 'Chat conversations', color: '#50E3C2', parent: 'db-models' },
+                    { id: 'model-conversation', label: 'Conversation', type: 'code', tech: 'db_models.py', description: 'Individual messages', color: '#50E3C2', parent: 'db-models' },
+                    { id: 'model-task', label: 'Task', type: 'code', tech: 'db_models.py', description: 'Async task queue', color: '#50E3C2', parent: 'db-models' },
+                ],
+                links: [
+                    { source: 'page-chat', target: 'app-dialog', label: 'API', color: '#50E3C2' },
+                    { source: 'page-agent', target: 'app-canvas', label: 'API', color: '#50E3C2' },
+                    { source: 'page-dataset', target: 'app-kb', label: 'API', color: '#50E3C2' },
+
+                    { source: 'app-user', target: 'svc-dialog', label: 'Service', color: '#50E3C2' },
+                    { source: 'app-dialog', target: 'svc-dialog', label: 'Service', color: '#50E3C2' },
+                    { source: 'app-kb', target: 'svc-kb', label: 'Service', color: '#50E3C2' },
+                    { source: 'app-document', target: 'svc-document', label: 'Service', color: '#50E3C2' },
+                    { source: 'app-canvas', target: 'svc-canvas', label: 'Service', color: '#50E3C2' },
+
+                    { source: 'svc-dialog', target: 'rag-pipeline', label: 'RAG', color: '#50E3C2' },
+                    { source: 'svc-canvas', target: 'agent-canvas', label: 'Execute', color: '#50E3C2' },
+                    { source: 'svc-document', target: 'rag-parser', label: 'Parse', color: '#50E3C2' },
+
+                    { source: 'rag-pipeline', target: 'rag-embedding', label: 'Embed', color: '#50E3C2' },
+                    { source: 'rag-pipeline', target: 'rag-rerank', label: 'Rerank', color: '#50E3C2' },
+                    { source: 'svc-dialog', target: 'rag-llm', label: 'LLM', color: '#50E3C2' },
+
+                    { source: 'agent-canvas', target: 'agent-components', label: 'Uses', color: '#50E3C2' },
+                    { source: 'agent-components', target: 'agent-tools', label: 'Executes', color: '#50E3C2' },
+
+                    { source: 'svc-dialog', target: 'model-dialog', label: 'CRUD', color: '#50E3C2' },
+                    { source: 'svc-dialog', target: 'model-conversation', label: 'CRUD', color: '#50E3C2' },
+                    { source: 'svc-kb', target: 'model-kb', label: 'CRUD', color: '#50E3C2' },
+                    { source: 'svc-document', target: 'model-document', label: 'CRUD', color: '#50E3C2' },
+                    { source: 'svc-document', target: 'model-file', label: 'CRUD', color: '#50E3C2' },
+                ]
+            }
         };
 
-        // Container Data
-        const containerData = {
-            nodes: [
-                { id: 'user', label: 'User', type: 'person', tech: '', description: 'RAGFlow user', details: 'End user accessing the system through web browser.', x: 500, y: 50 },
+        // D3 Setup
+        const svg = d3.select('#diagram');
+        const container = svg.append('g');
+        let currentLevel = 'container';
+        let currentData = architectureData.container;
+        let transform = d3.zoomIdentity;
 
-                { id: 'web', label: 'Web Application', type: 'container', tech: 'React 18, TypeScript, Umi.js', description: 'Provides UI for document\nmanagement, chat, and agents', details: 'SPA built with React, TypeScript, and Ant Design. Runs on port 8000.', x: 500, y: 180 },
-
-                { id: 'api', label: 'API Server', type: 'container', tech: 'Python, Flask', description: 'REST API for all RAGFlow\nfunctionality', details: 'Flask-based REST API handling all backend operations. Runs on port 9380.', x: 250, y: 340 },
-                { id: 'executor', label: 'Task Executors', type: 'container', tech: 'Python, Multi-worker', description: 'Background processing:\nparsing, embedding, indexing', details: 'Multiple worker processes handling async document processing tasks.', x: 750, y: 340 },
-
-                { id: 'deepdoc', label: 'DeepDoc Engine', type: 'container', tech: 'Python, CV Models', description: 'OCR, layout recognition,\ntable structure recognition', details: 'Advanced document understanding using computer vision models.', x: 500, y: 500 },
-                { id: 'agent', label: 'Agent Engine', type: 'container', tech: 'Python, Canvas', description: 'Agentic workflows and\nMCP integration', details: 'Orchestrates multi-step AI workflows with tool use and MCP support.', x: 850, y: 500 },
-
-                { id: 'mysql', label: 'MySQL', type: 'database', tech: 'Relational Database', description: 'Stores metadata, users,\nknowledge bases', details: 'Primary database for structured data and application state.', x: 80, y: 620 },
-                { id: 'redis', label: 'Redis', type: 'database', tech: 'In-Memory Cache', description: 'Session and cache\nmanagement', details: 'Fast in-memory store for caching and task queuing.', x: 250, y: 620 },
-                { id: 'minio', label: 'MinIO', type: 'database', tech: 'Object Storage', description: 'Document and file\nstorage', details: 'S3-compatible object storage for uploaded documents.', x: 420, y: 620 },
-                { id: 'searchdb', label: 'Search Engine', type: 'database', tech: 'Azure AI Search/ES', description: 'Full-text and vector\nindexing', details: 'Hybrid search engine combining BM25 and vector similarity.', x: 590, y: 620 },
-
-                { id: 'llm', label: 'LLM APIs', type: 'external', tech: 'External Services', description: 'OpenAI, Anthropic, etc.', details: 'External language model APIs for text generation.', x: 150, y: 760 },
-                { id: 'embedding', label: 'Embedding APIs', type: 'external', tech: 'External Services', description: 'Vector generation', details: 'External or self-hosted embedding model services.', x: 450, y: 760 }
-            ],
-            links: [
-                { source: 'user', target: 'web', label: 'Uses\n[HTTPS]', curve: 0 },
-                { source: 'web', target: 'api', label: 'API calls\n[REST/JSON]', curve: -20 },
-
-                { source: 'api', target: 'executor', label: 'Queue tasks\n[Redis]', curve: 0 },
-                { source: 'api', target: 'mysql', label: 'Read/Write\n[SQL]', curve: -25 },
-                { source: 'api', target: 'redis', label: 'Cache\n[Redis Protocol]', curve: -10 },
-                { source: 'api', target: 'minio', label: 'Store files\n[S3 API]', curve: 10 },
-
-                { source: 'executor', target: 'deepdoc', label: 'Parse docs', curve: -15 },
-                { source: 'executor', target: 'agent', label: 'Run agents', curve: 10 },
-                { source: 'executor', target: 'searchdb', label: 'Index\n[HTTPS]', curve: -20 },
-                { source: 'executor', target: 'mysql', label: 'Update status', curve: 40 },
-                { source: 'executor', target: 'minio', label: 'Retrieve files', curve: 15 },
-
-                { source: 'api', target: 'llm', label: 'Generation\n[HTTPS]', curve: -30 },
-                { source: 'executor', target: 'embedding', label: 'Embed text\n[HTTPS]', curve: -20 },
-                { source: 'api', target: 'searchdb', label: 'Search\n[HTTPS]', curve: 25 }
-            ]
-        };
-
-        let currentView = 'context';
-        let currentTransform = d3.zoomIdentity;
-        let selectedNode = null;
-
-        function showContext() {
-            currentView = 'context';
-            document.getElementById('contextBtn').classList.add('active');
-            document.getElementById('containerBtn').classList.remove('active');
-            renderDiagram(contextData);
-        }
-
-        function showContainer() {
-            currentView = 'container';
-            document.getElementById('containerBtn').classList.add('active');
-            document.getElementById('contextBtn').classList.remove('active');
-            renderDiagram(containerData);
-        }
-
-        function resetZoom() {
-            const svg = d3.select('#diagram');
-            const g = svg.select('g');
-
-            svg.transition()
-                .duration(750)
-                .call(zoom.transform, d3.zoomIdentity);
-        }
-
+        // Zoom behavior
         const zoom = d3.zoom()
-            .scaleExtent([0.5, 3])
+            .scaleExtent([0.1, 4])
             .on('zoom', (event) => {
-                currentTransform = event.transform;
-                d3.select('#diagram g').attr('transform', event.transform);
+                transform = event.transform;
+                container.attr('transform', transform);
             });
 
-        function renderDiagram(data) {
-            const container = document.getElementById('diagram-container');
-            const width = container.clientWidth || 1000;
-            const height = currentView === 'context' ? 600 : 850;
+        svg.call(zoom);
 
-            const svg = d3.select('#diagram');
-            svg.selectAll('*').remove();
+        // Tooltip
+        const tooltip = d3.select('#tooltip');
 
-            svg.attr('viewBox', `0 0 ${width} ${height}`)
-               .attr('preserveAspectRatio', 'xMidYMid meet')
-               .call(zoom);
+        // Force simulation
+        let simulation;
 
-            // Define gradients
-            const defs = svg.append('defs');
+        function initSimulation(nodes, links) {
+            const width = svg.node().getBoundingClientRect().width;
+            const height = svg.node().getBoundingClientRect().height;
 
-            // Person gradient
-            const personGradient = defs.append('linearGradient')
-                .attr('id', 'personGradient')
-                .attr('x1', '0%').attr('y1', '0%')
-                .attr('x2', '0%').attr('y2', '100%');
-            personGradient.append('stop').attr('offset', '0%').attr('stop-color', '#08427b');
-            personGradient.append('stop').attr('offset', '100%').attr('stop-color', '#0a5694');
+            simulation = d3.forceSimulation(nodes)
+                .force('link', d3.forceLink(links).id(d => d.id).distance(200))
+                .force('charge', d3.forceManyBody().strength(-1000))
+                .force('center', d3.forceCenter(width / 2, height / 2))
+                .force('collision', d3.forceCollide().radius(100));
+        }
 
-            // System gradient
-            const systemGradient = defs.append('linearGradient')
-                .attr('id', 'systemGradient')
-                .attr('x1', '0%').attr('y1', '0%')
-                .attr('x2', '0%').attr('y2', '100%');
-            systemGradient.append('stop').attr('offset', '0%').attr('stop-color', '#1168bd');
-            systemGradient.append('stop').attr('offset', '100%').attr('stop-color', '#1a7fd4');
+        function renderDiagram() {
+            // Clear existing
+            container.selectAll('*').remove();
 
-            // External gradient
-            const externalGradient = defs.append('linearGradient')
-                .attr('id', 'externalGradient')
-                .attr('x1', '0%').attr('y1', '0%')
-                .attr('x2', '0%').attr('y2', '100%');
-            externalGradient.append('stop').attr('offset', '0%').attr('stop-color', '#999999');
-            externalGradient.append('stop').attr('offset', '100%').attr('stop-color', '#aaaaaa');
+            const nodes = currentData.nodes.map(d => ({ ...d }));
+            const links = currentData.links.map(d => ({ ...d }));
 
-            // Container gradient
-            const containerGradient = defs.append('linearGradient')
-                .attr('id', 'containerGradient')
-                .attr('x1', '0%').attr('y1', '0%')
-                .attr('x2', '0%').attr('y2', '100%');
-            containerGradient.append('stop').attr('offset', '0%').attr('stop-color', '#438dd5');
-            containerGradient.append('stop').attr('offset', '100%').attr('stop-color', '#5ca5e8');
+            initSimulation(nodes, links);
 
-            // Database gradient
-            const databaseGradient = defs.append('linearGradient')
-                .attr('id', 'databaseGradient')
-                .attr('x1', '0%').attr('y1', '0%')
-                .attr('x2', '0%').attr('y2', '100%');
-            databaseGradient.append('stop').attr('offset', '0%').attr('stop-color', '#438dd5');
-            databaseGradient.append('stop').attr('offset', '100%').attr('stop-color', '#5ca5e8');
+            // Render links
+            const link = container.append('g')
+                .selectAll('path')
+                .data(links)
+                .join('path')
+                .attr('class', 'link')
+                .attr('stroke', d => d.color)
+                .attr('marker-end', 'url(#arrowhead)');
 
             // Arrow marker
-            defs.append('marker')
+            svg.append('defs').append('marker')
                 .attr('id', 'arrowhead')
-                .attr('markerWidth', 10)
-                .attr('markerHeight', 10)
-                .attr('refX', 9)
-                .attr('refY', 3)
+                .attr('viewBox', '0 -5 10 10')
+                .attr('refX', 20)
+                .attr('refY', 0)
+                .attr('markerWidth', 6)
+                .attr('markerHeight', 6)
                 .attr('orient', 'auto')
-                .append('polygon')
-                .attr('points', '0 0, 10 3, 0 6')
-                .attr('fill', '#95a5a6');
+                .append('path')
+                .attr('d', 'M0,-5L10,0L0,5')
+                .attr('fill', 'white')
+                .attr('opacity', 0.6);
 
-            const g = svg.append('g');
-
-            // Scale positions based on container width
-            const scaleFactor = width / 1000;
-            const scaledData = {
-                nodes: data.nodes.map(n => ({
-                    ...n,
-                    x: n.x * scaleFactor,
-                    y: n.y
-                })),
-                links: data.links
-            };
-
-            // Create curved path generator
-            function createCurvedPath(source, target, curve = 0) {
-                const dx = target.x - source.x;
-                const dy = target.y - source.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                const angle = Math.atan2(dy, dx);
-
-                // Calculate box edge points
-                const sourceOffsetX = Math.cos(angle) * 70 * scaleFactor;
-                const sourceOffsetY = Math.sin(angle) * 40;
-                const targetOffsetX = Math.cos(angle) * 70 * scaleFactor;
-                const targetOffsetY = Math.sin(angle) * 40;
-
-                const x1 = source.x + sourceOffsetX;
-                const y1 = source.y + sourceOffsetY;
-                const x2 = target.x - targetOffsetX;
-                const y2 = target.y - targetOffsetY;
-
-                // Calculate control points for curve
-                const midX = (x1 + x2) / 2;
-                const midY = (y1 + y2) / 2;
-
-                // Perpendicular offset for curve
-                const perpAngle = angle + Math.PI / 2;
-                const controlX = midX + Math.cos(perpAngle) * curve;
-                const controlY = midY + Math.sin(perpAngle) * curve;
-
-                return {
-                    path: `M ${x1},${y1} Q ${controlX},${controlY} ${x2},${y2}`,
-                    midX: controlX,
-                    midY: controlY
-                };
-            }
-
-            // Draw links
-            const linkGroup = g.append('g').attr('class', 'links');
-
-            scaledData.links.forEach((link, i) => {
-                const source = scaledData.nodes.find(n => n.id === link.source);
-                const target = scaledData.nodes.find(n => n.id === link.target);
-                const pathData = createCurvedPath(source, target, link.curve || 0);
-
-                const linkElement = linkGroup.append('g')
-                    .attr('data-source', link.source)
-                    .attr('data-target', link.target);
-
-                linkElement.append('path')
-                    .attr('class', 'link')
-                    .attr('d', pathData.path)
-                    .style('opacity', 0)
-                    .transition()
-                    .duration(500)
-                    .delay(i * 50)
-                    .style('opacity', 0.6);
-
-                // Link label background
-                const labelLines = link.label.split('\n');
-                const labelHeight = labelLines.length * 14;
-                const labelWidth = Math.max(...labelLines.map(l => l.length)) * 6 + 10;
-
-                linkElement.append('rect')
-                    .attr('class', 'link-label-bg')
-                    .attr('x', pathData.midX - labelWidth / 2)
-                    .attr('y', pathData.midY - labelHeight / 2)
-                    .attr('width', labelWidth)
-                    .attr('height', labelHeight);
-
-                // Link label
-                const labelText = linkElement.append('text')
-                    .attr('class', 'link-label')
-                    .attr('x', pathData.midX)
-                    .attr('y', pathData.midY - (labelLines.length - 1) * 7);
-
-                labelLines.forEach((line, idx) => {
-                    labelText.append('tspan')
-                        .attr('x', pathData.midX)
-                        .attr('dy', idx === 0 ? 0 : '1.1em')
-                        .attr('text-anchor', 'middle')
-                        .text(line);
-                });
-            });
-
-            // Draw nodes
-            const nodes = g.append('g').selectAll('g')
-                .data(scaledData.nodes)
-                .enter()
-                .append('g')
-                .attr('class', d => `node ${d.type}`)
-                .attr('transform', d => `translate(${d.x}, ${d.y})`)
-                .style('opacity', 0)
-                .on('click', function(event, d) {
-                    handleNodeClick(d, this);
-                })
-                .on('mouseenter', function(event, d) {
-                    showTooltip(event, d);
-                })
-                .on('mouseleave', hideTooltip);
-
-            // Animate nodes
-            nodes.transition()
-                .duration(500)
-                .delay((d, i) => i * 50)
-                .style('opacity', 1);
-
-            // Add drop shadow filter
-            const filter = defs.append('filter')
-                .attr('id', 'drop-shadow')
-                .attr('height', '130%');
-            filter.append('feGaussianBlur')
-                .attr('in', 'SourceAlpha')
-                .attr('stdDeviation', 3);
-            filter.append('feOffset')
-                .attr('dx', 2)
-                .attr('dy', 2)
-                .attr('result', 'offsetblur');
-            const feMerge = filter.append('feMerge');
-            feMerge.append('feMergeNode');
-            feMerge.append('feMergeNode')
-                .attr('in', 'SourceGraphic');
-
-            // Add rectangles with shadow
-            nodes.append('rect')
-                .attr('x', -70 * scaleFactor)
-                .attr('y', -35)
-                .attr('width', 140 * scaleFactor)
-                .attr('height', 70)
-                .attr('rx', 5)
-                .attr('filter', 'url(#drop-shadow)');
-
-            // Add main labels
-            nodes.append('text')
-                .attr('text-anchor', 'middle')
-                .attr('y', -15)
+            // Link labels
+            const linkLabel = container.append('g')
+                .selectAll('text')
+                .data(links)
+                .join('text')
+                .attr('class', 'link-label')
                 .text(d => d.label);
 
-            // Add tech labels
-            nodes.filter(d => d.tech)
-                .append('text')
-                .attr('class', 'tech-label')
-                .attr('text-anchor', 'middle')
-                .attr('y', 0)
-                .text(d => `[${d.tech}]`);
-
-            // Add descriptions
-            nodes.each(function(d) {
-                const descLines = d.description.split('\n');
-                const text = d3.select(this).append('text')
-                    .attr('class', 'description')
-                    .attr('text-anchor', 'middle')
-                    .attr('y', 10);
-
-                descLines.forEach((line, idx) => {
-                    text.append('tspan')
-                        .attr('x', 0)
-                        .attr('dy', idx === 0 ? '0.6em' : '1em')
-                        .text(line);
+            // Render nodes
+            const node = container.append('g')
+                .selectAll('g')
+                .data(nodes)
+                .join('g')
+                .attr('class', 'node')
+                .call(drag(simulation))
+                .on('click', (event, d) => {
+                    if (d.hasChildren && currentLevel !== 'code') {
+                        drillDown(d);
+                    }
+                })
+                .on('mouseover', (event, d) => {
+                    tooltip.style('opacity', 1)
+                        .html(`<strong>${d.label}</strong><br/>${d.tech}<br/><em>${d.description}</em>`)
+                        .style('left', (event.pageX + 10) + 'px')
+                        .style('top', (event.pageY - 10) + 'px');
+                })
+                .on('mouseout', () => {
+                    tooltip.style('opacity', 0);
                 });
-            });
 
-            // Reset transform
-            svg.call(zoom.transform, currentTransform);
+            // Node rectangles
+            node.append('rect')
+                .attr('width', 180)
+                .attr('height', 100)
+                .attr('fill', d => d.color)
+                .attr('stroke', d => d3.rgb(d.color).darker(1))
+                .attr('x', -90)
+                .attr('y', -50);
+
+            // Node title
+            node.append('text')
+                .attr('class', 'title')
+                .attr('y', -20)
+                .attr('text-anchor', 'middle')
+                .attr('fill', 'white')
+                .text(d => d.label);
+
+            // Node tech
+            node.append('text')
+                .attr('class', 'subtitle')
+                .attr('y', 0)
+                .attr('text-anchor', 'middle')
+                .attr('fill', 'white')
+                .text(d => d.tech)
+                .call(wrap, 160);
+
+            // Node description
+            node.append('text')
+                .attr('class', 'description')
+                .attr('y', 20)
+                .attr('text-anchor', 'middle')
+                .attr('fill', 'white')
+                .text(d => truncate(d.description, 40))
+                .call(wrap, 160);
+
+            // Drill-down indicator
+            node.filter(d => d.hasChildren)
+                .append('text')
+                .attr('y', 45)
+                .attr('text-anchor', 'middle')
+                .attr('fill', 'white')
+                .attr('font-size', '12px')
+                .text('🔍 Click to explore');
+
+            // Simulation tick
+            simulation.on('tick', () => {
+                link.attr('d', d => {
+                    const dx = d.target.x - d.source.x;
+                    const dy = d.target.y - d.source.y;
+                    const dr = Math.sqrt(dx * dx + dy * dy);
+                    return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
+                });
+
+                linkLabel
+                    .attr('x', d => (d.source.x + d.target.x) / 2)
+                    .attr('y', d => (d.source.y + d.target.y) / 2);
+
+                node.attr('transform', d => `translate(${d.x},${d.y})`);
+            });
         }
 
-        function handleNodeClick(nodeData, element) {
-            // Clear previous highlights
-            d3.selectAll('.node').classed('highlighted', false);
-            d3.selectAll('.link').classed('highlighted', false);
-
-            if (selectedNode === nodeData.id) {
-                selectedNode = null;
-                return;
+        function drag(simulation) {
+            function dragstarted(event) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                event.subject.fx = event.subject.x;
+                event.subject.fy = event.subject.y;
             }
 
-            selectedNode = nodeData.id;
-            d3.select(element).classed('highlighted', true);
+            function dragged(event) {
+                event.subject.fx = event.x;
+                event.subject.fy = event.y;
+            }
 
-            // Highlight connected links
-            d3.selectAll('.links g').each(function() {
-                const source = d3.select(this).attr('data-source');
-                const target = d3.select(this).attr('data-target');
+            function dragended(event) {
+                if (!event.active) simulation.alphaTarget(0);
+                event.subject.fx = null;
+                event.subject.fy = null;
+            }
 
-                if (source === nodeData.id || target === nodeData.id) {
-                    d3.select(this).select('.link').classed('highlighted', true);
+            return d3.drag()
+                .on('start', dragstarted)
+                .on('drag', dragged)
+                .on('end', dragended);
+        }
+
+        function wrap(text, width) {
+            text.each(function() {
+                const text = d3.select(this);
+                const words = text.text().split(/\s+/).reverse();
+                let word;
+                let line = [];
+                let lineNumber = 0;
+                const lineHeight = 1.1;
+                const y = text.attr('y');
+                const dy = 0;
+                let tspan = text.text(null).append('tspan').attr('x', 0).attr('y', y).attr('dy', dy + 'em');
+
+                while (word = words.pop()) {
+                    line.push(word);
+                    tspan.text(line.join(' '));
+                    if (tspan.node().getComputedTextLength() > width) {
+                        line.pop();
+                        tspan.text(line.join(' '));
+                        line = [word];
+                        tspan = text.append('tspan').attr('x', 0).attr('y', y).attr('dy', ++lineNumber * lineHeight + dy + 'em').text(word);
+                    }
                 }
             });
         }
 
-        function showTooltip(event, d) {
-            const tooltip = document.getElementById('tooltip');
-            tooltip.innerHTML = `
-                <div class="tooltip-title">${d.label}</div>
-                <div>${d.tech ? `<strong>Tech:</strong> ${d.tech}<br>` : ''}
-                ${d.details || d.description.replace(/\n/g, '<br>')}</div>
-            `;
-            tooltip.classList.add('visible');
-
-            const rect = event.target.getBoundingClientRect();
-            tooltip.style.left = (event.pageX + 10) + 'px';
-            tooltip.style.top = (event.pageY - 10) + 'px';
+        function truncate(str, maxLen) {
+            return str.length > maxLen ? str.substring(0, maxLen) + '...' : str;
         }
 
-        function hideTooltip() {
-            const tooltip = document.getElementById('tooltip');
-            tooltip.classList.remove('visible');
+        function showLevel(level) {
+            currentLevel = level;
+            currentData = architectureData[level];
+
+            // Update button states
+            document.querySelectorAll('#controls .btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('btn-' + level).classList.add('active');
+
+            // Update breadcrumb
+            updateBreadcrumb(level);
+
+            renderDiagram();
         }
 
-        // Handle window resize
-        let resizeTimer;
+        function drillDown(node) {
+            if (currentLevel === 'container') {
+                showLevel('component');
+            } else if (currentLevel === 'component') {
+                showLevel('code');
+            }
+        }
+
+        function updateBreadcrumb(level) {
+            const breadcrumb = document.getElementById('breadcrumb');
+            let html = '<span onclick="showLevel(\'container\')">Container Level</span>';
+
+            if (level === 'component' || level === 'code') {
+                html += '<span class="separator">→</span><span onclick="showLevel(\'component\')">Component Level</span>';
+            }
+
+            if (level === 'code') {
+                html += '<span class="separator">→</span><span>Code Level</span>';
+            }
+
+            breadcrumb.innerHTML = html;
+        }
+
+        function resetView() {
+            svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity);
+        }
+
+        function fitToScreen() {
+            const bounds = container.node().getBBox();
+            const parent = svg.node().getBoundingClientRect();
+            const fullWidth = bounds.width;
+            const fullHeight = bounds.height;
+            const width = parent.width;
+            const height = parent.height;
+            const midX = bounds.x + fullWidth / 2;
+            const midY = bounds.y + fullHeight / 2;
+
+            const scale = 0.8 / Math.max(fullWidth / width, fullHeight / height);
+            const translate = [width / 2 - scale * midX, height / 2 - scale * midY];
+
+            svg.transition()
+                .duration(750)
+                .call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+        }
+
+        // Search functionality
+        document.getElementById('search-box').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+
+            container.selectAll('.node').classed('highlight', false);
+
+            if (searchTerm) {
+                container.selectAll('.node')
+                    .filter(d => d.label.toLowerCase().includes(searchTerm) ||
+                                 d.description.toLowerCase().includes(searchTerm) ||
+                                 d.tech.toLowerCase().includes(searchTerm))
+                    .classed('highlight', true);
+            }
+        });
+
+        // Responsive handling
         window.addEventListener('resize', () => {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(() => {
-                renderDiagram(currentView === 'context' ? contextData : containerData);
-            }, 250);
+            renderDiagram();
         });
 
         // Initial render
-        showContext();
+        renderDiagram();
+
+        // Auto fit after initial layout
+        setTimeout(fitToScreen, 2000);
     </script>
 </body>
 </html>
