@@ -6,11 +6,21 @@
     <title>RAGFlow Architecture - C4 Model</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
-            background: #f5f5f5;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e3e8ef 100%);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         .header {
@@ -19,247 +29,380 @@
         }
 
         h1 {
-            color: #333;
+            color: #2c3e50;
             margin: 0;
+            font-size: clamp(24px, 5vw, 36px);
         }
 
         .subtitle {
-            color: #666;
+            color: #7f8c8d;
             margin-top: 10px;
+            font-size: clamp(12px, 3vw, 16px);
         }
 
         .controls {
             text-align: center;
             margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         button {
-            padding: 10px 20px;
-            margin: 0 10px;
+            padding: 12px 24px;
             font-size: 14px;
             cursor: pointer;
-            background: #0066cc;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            border-radius: 4px;
-            transition: background 0.3s;
+            border-radius: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            font-weight: 600;
         }
 
         button:hover {
-            background: #0052a3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
         }
 
         button.active {
-            background: #004080;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        button.reset-zoom {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        #diagram-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            margin: 0 auto;
         }
 
         #diagram {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin: 0 auto;
+            display: block;
+            width: 100%;
+            height: auto;
         }
 
         .node {
             cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .node:hover {
+            filter: brightness(1.1);
+        }
+
+        .node.highlighted {
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8));
         }
 
         .node rect {
             stroke-width: 2px;
+            transition: all 0.3s;
+        }
+
+        .node:hover rect {
+            stroke-width: 3px;
+            filter: brightness(1.1);
         }
 
         .person rect {
-            fill: #08427b;
+            fill: url(#personGradient);
             stroke: #052e56;
         }
 
         .system rect {
-            fill: #1168bd;
+            fill: url(#systemGradient);
             stroke: #0b4884;
         }
 
         .external rect {
-            fill: #999999;
+            fill: url(#externalGradient);
             stroke: #707070;
         }
 
         .container rect {
-            fill: #438dd5;
+            fill: url(#containerGradient);
             stroke: #2e5f8d;
         }
 
         .database rect {
-            fill: #438dd5;
+            fill: url(#databaseGradient);
             stroke: #2e5f8d;
         }
 
         .node text {
             fill: white;
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
             pointer-events: none;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
 
         .node .tech-label {
-            font-size: 11px;
+            font-size: 10px;
             font-style: italic;
             font-weight: normal;
-            fill: #e0e0e0;
+            fill: #e8e8e8;
         }
 
         .node .description {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: normal;
-            fill: #f0f0f0;
+            fill: #f5f5f5;
         }
 
         .link {
             fill: none;
-            stroke: #707070;
+            stroke: #95a5a6;
             stroke-width: 2px;
             marker-end: url(#arrowhead);
+            opacity: 0.6;
+            transition: all 0.3s;
+        }
+
+        .link:hover,
+        .link.highlighted {
+            stroke: #e74c3c;
+            stroke-width: 3px;
+            opacity: 1;
         }
 
         .link-label {
             font-size: 11px;
-            fill: #333;
-            background: white;
-            padding: 2px 4px;
+            fill: #34495e;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .link-label-bg {
+            fill: white;
+            opacity: 0.9;
+            rx: 3;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(44, 62, 80, 0.95);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 13px;
+            line-height: 1.6;
+            max-width: 300px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+        }
+
+        .tooltip-title {
+            font-weight: bold;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: #3498db;
         }
 
         .legend {
-            margin-top: 20px;
-            padding: 15px;
+            margin-top: 30px;
+            padding: 20px;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         .legend-title {
             font-weight: bold;
-            margin-bottom: 10px;
-            color: #333;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
         }
 
         .legend-item {
-            display: inline-block;
-            margin-right: 20px;
-            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .legend-color {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            margin-right: 5px;
-            vertical-align: middle;
-            border: 2px solid #333;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #34495e;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .info-panel {
+            margin-top: 20px;
+            padding: 15px;
+            background: #ecf0f1;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 13px;
+            color: #7f8c8d;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .subtitle {
+                font-size: 12px;
+            }
+
+            button {
+                padding: 10px 16px;
+                font-size: 12px;
+            }
+
+            .legend-items {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>RAGFlow Architecture Diagram</h1>
-        <div class="subtitle">C4 Model - System Context & Container Views</div>
-    </div>
+    <div class="container">
+        <div class="header">
+            <h1>RAGFlow Architecture Diagram</h1>
+            <div class="subtitle">C4 Model - Interactive System Context & Container Views</div>
+        </div>
 
-    <div class="controls">
-        <button id="contextBtn" class="active" onclick="showContext()">System Context</button>
-        <button id="containerBtn" onclick="showContainer()">Container Diagram</button>
-    </div>
+        <div class="controls">
+            <button id="contextBtn" class="active" onclick="showContext()">📊 System Context</button>
+            <button id="containerBtn" onclick="showContainer()">🏗️ Container Diagram</button>
+            <button class="reset-zoom" onclick="resetZoom()">🔍 Reset Zoom</button>
+        </div>
 
-    <svg id="diagram"></svg>
+        <div id="diagram-container">
+            <svg id="diagram"></svg>
+        </div>
 
-    <div class="legend">
-        <div class="legend-title">Legend</div>
-        <div class="legend-item">
-            <span class="legend-color" style="background: #08427b; border-color: #052e56;"></span>
-            <span>Person</span>
+        <div class="info-panel">
+            💡 <strong>Tip:</strong> Hover over components for details • Click nodes to highlight connections • Scroll to zoom • Drag to pan
         </div>
-        <div class="legend-item">
-            <span class="legend-color" style="background: #1168bd; border-color: #0b4884;"></span>
-            <span>Internal System</span>
+
+        <div class="legend">
+            <div class="legend-title">Legend</div>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #08427b 0%, #0a5694 100%);"></div>
+                    <span>Person</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #1168bd 0%, #1a7fd4 100%);"></div>
+                    <span>Internal System</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #999999 0%, #aaaaaa 100%);"></div>
+                    <span>External System</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #438dd5 0%, #5ca5e8 100%);"></div>
+                    <span>Container/Database</span>
+                </div>
+            </div>
         </div>
-        <div class="legend-item">
-            <span class="legend-color" style="background: #999999; border-color: #707070;"></span>
-            <span>External System</span>
-        </div>
-        <div class="legend-item">
-            <span class="legend-color" style="background: #438dd5; border-color: #2e5f8d;"></span>
-            <span>Container/Database</span>
-        </div>
+
+        <div class="tooltip" id="tooltip"></div>
     </div>
 
     <script>
         // System Context Data
         const contextData = {
             nodes: [
-                { id: 'user', label: 'End User', type: 'person', tech: '', description: 'Uses RAGFlow for\nQA and document analysis', x: 400, y: 50 },
-                { id: 'developer', label: 'Developer', type: 'person', tech: '', description: 'Integrates RAGFlow\nvia API/SDK', x: 100, y: 50 },
-                { id: 'admin', label: 'Administrator', type: 'person', tech: '', description: 'Manages system\nand users', x: 700, y: 50 },
+                { id: 'user', label: 'End User', type: 'person', tech: '', description: 'Uses RAGFlow for\nQA and document analysis', details: 'Interacts with the web interface to upload documents, ask questions, and get AI-powered answers.', x: 400, y: 80 },
+                { id: 'developer', label: 'Developer', type: 'person', tech: '', description: 'Integrates RAGFlow\nvia API/SDK', details: 'Uses REST API or Python SDK to integrate RAGFlow into their applications.', x: 100, y: 80 },
+                { id: 'admin', label: 'Administrator', type: 'person', tech: '', description: 'Manages system\nand users', details: 'Configures LLM providers, manages users, and monitors system health.', x: 700, y: 80 },
 
-                { id: 'ragflow', label: 'RAGFlow', type: 'system', tech: 'Python, React, TypeScript', description: 'RAG engine with deep document\nunderstanding and agent capabilities', x: 400, y: 250 },
+                { id: 'ragflow', label: 'RAGFlow', type: 'system', tech: 'Python, React, TypeScript', description: 'RAG engine with deep document\nunderstanding and agent capabilities', details: 'Core RAG system providing document parsing, embedding, retrieval, and generation capabilities.', x: 400, y: 280 },
 
-                { id: 'llm', label: 'LLM Providers', type: 'external', tech: 'OpenAI, Anthropic, etc.', description: 'Large language models for\ngeneration and reasoning', x: 100, y: 450 },
-                { id: 'embedding', label: 'Embedding Services', type: 'external', tech: 'OpenAI, Voyage, etc.', description: 'Text embedding models for\nvector generation', x: 300, y: 450 },
-                { id: 'cloud', label: 'Cloud Storage', type: 'external', tech: 'Azure Blob, MinIO, S3', description: 'Object storage for\ndocuments and files', x: 500, y: 450 },
-                { id: 'search', label: 'Search Services', type: 'external', tech: 'Azure AI Search, ES', description: 'Full-text and vector\nsearch capabilities', x: 700, y: 450 }
+                { id: 'llm', label: 'LLM Providers', type: 'external', tech: 'OpenAI, Anthropic, etc.', description: 'Large language models for\ngeneration and reasoning', details: 'External LLM services like OpenAI GPT-4, Anthropic Claude, DeepSeek, etc.', x: 100, y: 480 },
+                { id: 'embedding', label: 'Embedding Services', type: 'external', tech: 'OpenAI, Voyage, etc.', description: 'Text embedding models for\nvector generation', details: 'Convert text into vector representations for semantic search.', x: 300, y: 480 },
+                { id: 'cloud', label: 'Cloud Storage', type: 'external', tech: 'Azure Blob, MinIO, S3', description: 'Object storage for\ndocuments and files', details: 'Stores uploaded documents and processed files.', x: 500, y: 480 },
+                { id: 'search', label: 'Search Services', type: 'external', tech: 'Azure AI Search, ES', description: 'Full-text and vector\nsearch capabilities', details: 'Provides hybrid search combining full-text and semantic vector search.', x: 700, y: 480 }
             ],
             links: [
-                { source: 'user', target: 'ragflow', label: 'Uses web interface' },
-                { source: 'developer', target: 'ragflow', label: 'API calls\n[HTTPS/REST]' },
-                { source: 'admin', target: 'ragflow', label: 'Configures system' },
+                { source: 'user', target: 'ragflow', label: 'Uses web interface', curve: 0 },
+                { source: 'developer', target: 'ragflow', label: 'API calls\n[HTTPS/REST]', curve: 20 },
+                { source: 'admin', target: 'ragflow', label: 'Configures system', curve: -20 },
 
-                { source: 'ragflow', target: 'llm', label: 'Generation requests\n[HTTPS]' },
-                { source: 'ragflow', target: 'embedding', label: 'Embedding requests\n[HTTPS]' },
-                { source: 'ragflow', target: 'cloud', label: 'Stores/retrieves files\n[HTTPS]' },
-                { source: 'ragflow', target: 'search', label: 'Index & search\n[HTTPS]' }
+                { source: 'ragflow', target: 'llm', label: 'Generation requests\n[HTTPS]', curve: -30 },
+                { source: 'ragflow', target: 'embedding', label: 'Embedding requests\n[HTTPS]', curve: -15 },
+                { source: 'ragflow', target: 'cloud', label: 'Stores/retrieves files\n[HTTPS]', curve: 15 },
+                { source: 'ragflow', target: 'search', label: 'Index & search\n[HTTPS]', curve: 30 }
             ]
         };
 
         // Container Data
         const containerData = {
             nodes: [
-                { id: 'user', label: 'User', type: 'person', tech: '', description: 'RAGFlow user', x: 400, y: 30 },
+                { id: 'user', label: 'User', type: 'person', tech: '', description: 'RAGFlow user', details: 'End user accessing the system through web browser.', x: 500, y: 50 },
 
-                { id: 'web', label: 'Web Application', type: 'container', tech: 'React 18, TypeScript, Umi.js', description: 'Provides UI for document\nmanagement, chat, and agents', x: 400, y: 150 },
+                { id: 'web', label: 'Web Application', type: 'container', tech: 'React 18, TypeScript, Umi.js', description: 'Provides UI for document\nmanagement, chat, and agents', details: 'SPA built with React, TypeScript, and Ant Design. Runs on port 8000.', x: 500, y: 180 },
 
-                { id: 'api', label: 'API Server', type: 'container', tech: 'Python, Flask', description: 'REST API for all RAGFlow\nfunctionality', x: 200, y: 300 },
-                { id: 'executor', label: 'Task Executors', type: 'container', tech: 'Python, Multi-worker', description: 'Background processing:\nparsing, embedding, indexing', x: 600, y: 300 },
+                { id: 'api', label: 'API Server', type: 'container', tech: 'Python, Flask', description: 'REST API for all RAGFlow\nfunctionality', details: 'Flask-based REST API handling all backend operations. Runs on port 9380.', x: 250, y: 340 },
+                { id: 'executor', label: 'Task Executors', type: 'container', tech: 'Python, Multi-worker', description: 'Background processing:\nparsing, embedding, indexing', details: 'Multiple worker processes handling async document processing tasks.', x: 750, y: 340 },
 
-                { id: 'deepdoc', label: 'DeepDoc Engine', type: 'container', tech: 'Python, CV Models', description: 'OCR, layout recognition,\ntable structure recognition', x: 400, y: 450 },
-                { id: 'agent', label: 'Agent Engine', type: 'container', tech: 'Python, Canvas', description: 'Agentic workflows and\nMCP integration', x: 700, y: 450 },
+                { id: 'deepdoc', label: 'DeepDoc Engine', type: 'container', tech: 'Python, CV Models', description: 'OCR, layout recognition,\ntable structure recognition', details: 'Advanced document understanding using computer vision models.', x: 500, y: 500 },
+                { id: 'agent', label: 'Agent Engine', type: 'container', tech: 'Python, Canvas', description: 'Agentic workflows and\nMCP integration', details: 'Orchestrates multi-step AI workflows with tool use and MCP support.', x: 850, y: 500 },
 
-                { id: 'mysql', label: 'MySQL', type: 'database', tech: 'Relational Database', description: 'Stores metadata, users,\nknowledge bases', x: 50, y: 550 },
-                { id: 'redis', label: 'Redis', type: 'database', tech: 'In-Memory Cache', description: 'Session and cache\nmanagement', x: 200, y: 550 },
-                { id: 'minio', label: 'MinIO', type: 'database', tech: 'Object Storage', description: 'Document and file\nstorage', x: 350, y: 550 },
-                { id: 'searchdb', label: 'Search Engine', type: 'database', tech: 'Azure AI Search/ES', description: 'Full-text and vector\nindexing', x: 500, y: 550 },
+                { id: 'mysql', label: 'MySQL', type: 'database', tech: 'Relational Database', description: 'Stores metadata, users,\nknowledge bases', details: 'Primary database for structured data and application state.', x: 80, y: 620 },
+                { id: 'redis', label: 'Redis', type: 'database', tech: 'In-Memory Cache', description: 'Session and cache\nmanagement', details: 'Fast in-memory store for caching and task queuing.', x: 250, y: 620 },
+                { id: 'minio', label: 'MinIO', type: 'database', tech: 'Object Storage', description: 'Document and file\nstorage', details: 'S3-compatible object storage for uploaded documents.', x: 420, y: 620 },
+                { id: 'searchdb', label: 'Search Engine', type: 'database', tech: 'Azure AI Search/ES', description: 'Full-text and vector\nindexing', details: 'Hybrid search engine combining BM25 and vector similarity.', x: 590, y: 620 },
 
-                { id: 'llm', label: 'LLM APIs', type: 'external', tech: 'External Services', description: 'OpenAI, Anthropic, etc.', x: 100, y: 700 },
-                { id: 'embedding', label: 'Embedding APIs', type: 'external', tech: 'External Services', description: 'Vector generation', x: 350, y: 700 }
+                { id: 'llm', label: 'LLM APIs', type: 'external', tech: 'External Services', description: 'OpenAI, Anthropic, etc.', details: 'External language model APIs for text generation.', x: 150, y: 760 },
+                { id: 'embedding', label: 'Embedding APIs', type: 'external', tech: 'External Services', description: 'Vector generation', details: 'External or self-hosted embedding model services.', x: 450, y: 760 }
             ],
             links: [
-                { source: 'user', target: 'web', label: 'Uses\n[HTTPS]' },
-                { source: 'web', target: 'api', label: 'API calls\n[REST/JSON]' },
+                { source: 'user', target: 'web', label: 'Uses\n[HTTPS]', curve: 0 },
+                { source: 'web', target: 'api', label: 'API calls\n[REST/JSON]', curve: -20 },
 
-                { source: 'api', target: 'executor', label: 'Queue tasks\n[Redis]' },
-                { source: 'api', target: 'mysql', label: 'Read/Write\n[SQL]' },
-                { source: 'api', target: 'redis', label: 'Cache\n[Redis Protocol]' },
-                { source: 'api', target: 'minio', label: 'Store files\n[S3 API]' },
+                { source: 'api', target: 'executor', label: 'Queue tasks\n[Redis]', curve: 0 },
+                { source: 'api', target: 'mysql', label: 'Read/Write\n[SQL]', curve: -25 },
+                { source: 'api', target: 'redis', label: 'Cache\n[Redis Protocol]', curve: -10 },
+                { source: 'api', target: 'minio', label: 'Store files\n[S3 API]', curve: 10 },
 
-                { source: 'executor', target: 'deepdoc', label: 'Parse docs' },
-                { source: 'executor', target: 'agent', label: 'Run agents' },
-                { source: 'executor', target: 'searchdb', label: 'Index\n[HTTPS]' },
-                { source: 'executor', target: 'mysql', label: 'Update status' },
-                { source: 'executor', target: 'minio', label: 'Retrieve files' },
+                { source: 'executor', target: 'deepdoc', label: 'Parse docs', curve: -15 },
+                { source: 'executor', target: 'agent', label: 'Run agents', curve: 10 },
+                { source: 'executor', target: 'searchdb', label: 'Index\n[HTTPS]', curve: -20 },
+                { source: 'executor', target: 'mysql', label: 'Update status', curve: 40 },
+                { source: 'executor', target: 'minio', label: 'Retrieve files', curve: 15 },
 
-                { source: 'api', target: 'llm', label: 'Generation\n[HTTPS]' },
-                { source: 'executor', target: 'embedding', label: 'Embed text\n[HTTPS]' },
-                { source: 'api', target: 'searchdb', label: 'Search\n[HTTPS]' }
+                { source: 'api', target: 'llm', label: 'Generation\n[HTTPS]', curve: -30 },
+                { source: 'executor', target: 'embedding', label: 'Embed text\n[HTTPS]', curve: -20 },
+                { source: 'api', target: 'searchdb', label: 'Search\n[HTTPS]', curve: 25 }
             ]
         };
 
         let currentView = 'context';
+        let currentTransform = d3.zoomIdentity;
+        let selectedNode = null;
 
         function showContext() {
             currentView = 'context';
@@ -275,100 +418,230 @@
             renderDiagram(containerData);
         }
 
+        function resetZoom() {
+            const svg = d3.select('#diagram');
+            const g = svg.select('g');
+
+            svg.transition()
+                .duration(750)
+                .call(zoom.transform, d3.zoomIdentity);
+        }
+
+        const zoom = d3.zoom()
+            .scaleExtent([0.5, 3])
+            .on('zoom', (event) => {
+                currentTransform = event.transform;
+                d3.select('#diagram g').attr('transform', event.transform);
+            });
+
         function renderDiagram(data) {
+            const container = document.getElementById('diagram-container');
+            const width = container.clientWidth || 1000;
+            const height = currentView === 'context' ? 600 : 850;
+
             const svg = d3.select('#diagram');
             svg.selectAll('*').remove();
 
-            const width = 900;
-            const height = currentView === 'context' ? 550 : 750;
+            svg.attr('viewBox', `0 0 ${width} ${height}`)
+               .attr('preserveAspectRatio', 'xMidYMid meet')
+               .call(zoom);
 
-            svg.attr('width', width)
-               .attr('height', height);
+            // Define gradients
+            const defs = svg.append('defs');
 
-            // Define arrow marker
-            svg.append('defs').append('marker')
+            // Person gradient
+            const personGradient = defs.append('linearGradient')
+                .attr('id', 'personGradient')
+                .attr('x1', '0%').attr('y1', '0%')
+                .attr('x2', '0%').attr('y2', '100%');
+            personGradient.append('stop').attr('offset', '0%').attr('stop-color', '#08427b');
+            personGradient.append('stop').attr('offset', '100%').attr('stop-color', '#0a5694');
+
+            // System gradient
+            const systemGradient = defs.append('linearGradient')
+                .attr('id', 'systemGradient')
+                .attr('x1', '0%').attr('y1', '0%')
+                .attr('x2', '0%').attr('y2', '100%');
+            systemGradient.append('stop').attr('offset', '0%').attr('stop-color', '#1168bd');
+            systemGradient.append('stop').attr('offset', '100%').attr('stop-color', '#1a7fd4');
+
+            // External gradient
+            const externalGradient = defs.append('linearGradient')
+                .attr('id', 'externalGradient')
+                .attr('x1', '0%').attr('y1', '0%')
+                .attr('x2', '0%').attr('y2', '100%');
+            externalGradient.append('stop').attr('offset', '0%').attr('stop-color', '#999999');
+            externalGradient.append('stop').attr('offset', '100%').attr('stop-color', '#aaaaaa');
+
+            // Container gradient
+            const containerGradient = defs.append('linearGradient')
+                .attr('id', 'containerGradient')
+                .attr('x1', '0%').attr('y1', '0%')
+                .attr('x2', '0%').attr('y2', '100%');
+            containerGradient.append('stop').attr('offset', '0%').attr('stop-color', '#438dd5');
+            containerGradient.append('stop').attr('offset', '100%').attr('stop-color', '#5ca5e8');
+
+            // Database gradient
+            const databaseGradient = defs.append('linearGradient')
+                .attr('id', 'databaseGradient')
+                .attr('x1', '0%').attr('y1', '0%')
+                .attr('x2', '0%').attr('y2', '100%');
+            databaseGradient.append('stop').attr('offset', '0%').attr('stop-color', '#438dd5');
+            databaseGradient.append('stop').attr('offset', '100%').attr('stop-color', '#5ca5e8');
+
+            // Arrow marker
+            defs.append('marker')
                 .attr('id', 'arrowhead')
                 .attr('markerWidth', 10)
                 .attr('markerHeight', 10)
-                .attr('refX', 8)
+                .attr('refX', 9)
                 .attr('refY', 3)
                 .attr('orient', 'auto')
                 .append('polygon')
                 .attr('points', '0 0, 10 3, 0 6')
-                .attr('fill', '#707070');
+                .attr('fill', '#95a5a6');
+
+            const g = svg.append('g');
+
+            // Scale positions based on container width
+            const scaleFactor = width / 1000;
+            const scaledData = {
+                nodes: data.nodes.map(n => ({
+                    ...n,
+                    x: n.x * scaleFactor,
+                    y: n.y
+                })),
+                links: data.links
+            };
+
+            // Create curved path generator
+            function createCurvedPath(source, target, curve = 0) {
+                const dx = target.x - source.x;
+                const dy = target.y - source.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx);
+
+                // Calculate box edge points
+                const sourceOffsetX = Math.cos(angle) * 70 * scaleFactor;
+                const sourceOffsetY = Math.sin(angle) * 40;
+                const targetOffsetX = Math.cos(angle) * 70 * scaleFactor;
+                const targetOffsetY = Math.sin(angle) * 40;
+
+                const x1 = source.x + sourceOffsetX;
+                const y1 = source.y + sourceOffsetY;
+                const x2 = target.x - targetOffsetX;
+                const y2 = target.y - targetOffsetY;
+
+                // Calculate control points for curve
+                const midX = (x1 + x2) / 2;
+                const midY = (y1 + y2) / 2;
+
+                // Perpendicular offset for curve
+                const perpAngle = angle + Math.PI / 2;
+                const controlX = midX + Math.cos(perpAngle) * curve;
+                const controlY = midY + Math.sin(perpAngle) * curve;
+
+                return {
+                    path: `M ${x1},${y1} Q ${controlX},${controlY} ${x2},${y2}`,
+                    midX: controlX,
+                    midY: controlY
+                };
+            }
 
             // Draw links
-            const links = svg.append('g').selectAll('path')
-                .data(data.links)
-                .enter();
+            const linkGroup = g.append('g').attr('class', 'links');
 
-            links.append('path')
-                .attr('class', 'link')
-                .attr('d', d => {
-                    const source = data.nodes.find(n => n.id === d.source);
-                    const target = data.nodes.find(n => n.id === d.target);
+            scaledData.links.forEach((link, i) => {
+                const source = scaledData.nodes.find(n => n.id === link.source);
+                const target = scaledData.nodes.find(n => n.id === link.target);
+                const pathData = createCurvedPath(source, target, link.curve || 0);
 
-                    // Calculate the angle between source and target
-                    const dx = target.x - source.x;
-                    const dy = target.y - source.y;
-                    const angle = Math.atan2(dy, dx);
+                const linkElement = linkGroup.append('g')
+                    .attr('data-source', link.source)
+                    .attr('data-target', link.target);
 
-                    // Offset from center based on box size
-                    const sourceOffsetX = Math.cos(angle) * 70;
-                    const sourceOffsetY = Math.sin(angle) * 40;
-                    const targetOffsetX = Math.cos(angle) * 70;
-                    const targetOffsetY = Math.sin(angle) * 40;
+                linkElement.append('path')
+                    .attr('class', 'link')
+                    .attr('d', pathData.path)
+                    .style('opacity', 0)
+                    .transition()
+                    .duration(500)
+                    .delay(i * 50)
+                    .style('opacity', 0.6);
 
-                    const x1 = source.x + sourceOffsetX;
-                    const y1 = source.y + sourceOffsetY;
-                    const x2 = target.x - targetOffsetX;
-                    const y2 = target.y - targetOffsetY;
+                // Link label background
+                const labelLines = link.label.split('\n');
+                const labelHeight = labelLines.length * 14;
+                const labelWidth = Math.max(...labelLines.map(l => l.length)) * 6 + 10;
 
-                    return `M ${x1},${y1} L ${x2},${y2}`;
+                linkElement.append('rect')
+                    .attr('class', 'link-label-bg')
+                    .attr('x', pathData.midX - labelWidth / 2)
+                    .attr('y', pathData.midY - labelHeight / 2)
+                    .attr('width', labelWidth)
+                    .attr('height', labelHeight);
+
+                // Link label
+                const labelText = linkElement.append('text')
+                    .attr('class', 'link-label')
+                    .attr('x', pathData.midX)
+                    .attr('y', pathData.midY - (labelLines.length - 1) * 7);
+
+                labelLines.forEach((line, idx) => {
+                    labelText.append('tspan')
+                        .attr('x', pathData.midX)
+                        .attr('dy', idx === 0 ? 0 : '1.1em')
+                        .attr('text-anchor', 'middle')
+                        .text(line);
                 });
-
-            // Draw link labels
-            links.append('text')
-                .attr('class', 'link-label')
-                .attr('x', d => {
-                    const source = data.nodes.find(n => n.id === d.source);
-                    const target = data.nodes.find(n => n.id === d.target);
-                    return (source.x + target.x) / 2;
-                })
-                .attr('y', d => {
-                    const source = data.nodes.find(n => n.id === d.source);
-                    const target = data.nodes.find(n => n.id === d.target);
-                    return (source.y + target.y) / 2 - 5;
-                })
-                .attr('text-anchor', 'middle')
-                .selectAll('tspan')
-                .data(d => d.label.split('\n'))
-                .enter()
-                .append('tspan')
-                .attr('x', function() {
-                    const d = d3.select(this.parentNode).datum();
-                    const source = data.nodes.find(n => n.id === d.source);
-                    const target = data.nodes.find(n => n.id === d.target);
-                    return (source.x + target.x) / 2;
-                })
-                .attr('dy', (d, i) => i === 0 ? 0 : '1.1em')
-                .text(d => d);
+            });
 
             // Draw nodes
-            const nodes = svg.append('g').selectAll('g')
-                .data(data.nodes)
+            const nodes = g.append('g').selectAll('g')
+                .data(scaledData.nodes)
                 .enter()
                 .append('g')
                 .attr('class', d => `node ${d.type}`)
-                .attr('transform', d => `translate(${d.x}, ${d.y})`);
+                .attr('transform', d => `translate(${d.x}, ${d.y})`)
+                .style('opacity', 0)
+                .on('click', function(event, d) {
+                    handleNodeClick(d, this);
+                })
+                .on('mouseenter', function(event, d) {
+                    showTooltip(event, d);
+                })
+                .on('mouseleave', hideTooltip);
 
-            // Add rectangles
+            // Animate nodes
+            nodes.transition()
+                .duration(500)
+                .delay((d, i) => i * 50)
+                .style('opacity', 1);
+
+            // Add drop shadow filter
+            const filter = defs.append('filter')
+                .attr('id', 'drop-shadow')
+                .attr('height', '130%');
+            filter.append('feGaussianBlur')
+                .attr('in', 'SourceAlpha')
+                .attr('stdDeviation', 3);
+            filter.append('feOffset')
+                .attr('dx', 2)
+                .attr('dy', 2)
+                .attr('result', 'offsetblur');
+            const feMerge = filter.append('feMerge');
+            feMerge.append('feMergeNode');
+            feMerge.append('feMergeNode')
+                .attr('in', 'SourceGraphic');
+
+            // Add rectangles with shadow
             nodes.append('rect')
-                .attr('x', -70)
+                .attr('x', -70 * scaleFactor)
                 .attr('y', -35)
-                .attr('width', 140)
+                .attr('width', 140 * scaleFactor)
                 .attr('height', 70)
-                .attr('rx', 5);
+                .attr('rx', 5)
+                .attr('filter', 'url(#drop-shadow)');
 
             // Add main labels
             nodes.append('text')
@@ -385,18 +658,76 @@
                 .text(d => `[${d.tech}]`);
 
             // Add descriptions
-            nodes.append('text')
-                .attr('class', 'description')
-                .attr('text-anchor', 'middle')
-                .attr('y', 10)
-                .selectAll('tspan')
-                .data(d => d.description.split('\n'))
-                .enter()
-                .append('tspan')
-                .attr('x', 0)
-                .attr('dy', (d, i) => i === 0 ? '0.6em' : '1em')
-                .text(d => d);
+            nodes.each(function(d) {
+                const descLines = d.description.split('\n');
+                const text = d3.select(this).append('text')
+                    .attr('class', 'description')
+                    .attr('text-anchor', 'middle')
+                    .attr('y', 10);
+
+                descLines.forEach((line, idx) => {
+                    text.append('tspan')
+                        .attr('x', 0)
+                        .attr('dy', idx === 0 ? '0.6em' : '1em')
+                        .text(line);
+                });
+            });
+
+            // Reset transform
+            svg.call(zoom.transform, currentTransform);
         }
+
+        function handleNodeClick(nodeData, element) {
+            // Clear previous highlights
+            d3.selectAll('.node').classed('highlighted', false);
+            d3.selectAll('.link').classed('highlighted', false);
+
+            if (selectedNode === nodeData.id) {
+                selectedNode = null;
+                return;
+            }
+
+            selectedNode = nodeData.id;
+            d3.select(element).classed('highlighted', true);
+
+            // Highlight connected links
+            d3.selectAll('.links g').each(function() {
+                const source = d3.select(this).attr('data-source');
+                const target = d3.select(this).attr('data-target');
+
+                if (source === nodeData.id || target === nodeData.id) {
+                    d3.select(this).select('.link').classed('highlighted', true);
+                }
+            });
+        }
+
+        function showTooltip(event, d) {
+            const tooltip = document.getElementById('tooltip');
+            tooltip.innerHTML = `
+                <div class="tooltip-title">${d.label}</div>
+                <div>${d.tech ? `<strong>Tech:</strong> ${d.tech}<br>` : ''}
+                ${d.details || d.description.replace(/\n/g, '<br>')}</div>
+            `;
+            tooltip.classList.add('visible');
+
+            const rect = event.target.getBoundingClientRect();
+            tooltip.style.left = (event.pageX + 10) + 'px';
+            tooltip.style.top = (event.pageY - 10) + 'px';
+        }
+
+        function hideTooltip() {
+            const tooltip = document.getElementById('tooltip');
+            tooltip.classList.remove('visible');
+        }
+
+        // Handle window resize
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                renderDiagram(currentView === 'context' ? contextData : containerData);
+            }, 250);
+        });
 
         // Initial render
         showContext();
