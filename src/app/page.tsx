@@ -1,5 +1,6 @@
-import { Github, Linkedin, Mail, Brain, Workflow, Database, Layers, ExternalLink } from "lucide-react";
+import { Github, Linkedin, Mail, Brain, Workflow, Database, Layers, ExternalLink, Calendar, Clock, ArrowRight, MessageSquare } from "lucide-react";
 import { AIDemo } from "./AIDemo";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -7,10 +8,11 @@ export default function Home() {
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 border-b border-slate-800/50 bg-slate-950/80 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <span className="font-bold text-xl tracking-tight">RAY TONG <span className="text-indigo-400">/ AI Architect</span></span>
+          <span className="font-bold text-xl tracking-tight uppercase">RAY TONG <span className="text-indigo-400">/ AI Architect</span></span>
           <div className="hidden md:flex gap-8 text-sm font-medium">
             <a href="#projects" className="hover:text-indigo-400 transition-colors">Projects</a>
             <a href="#expertise" className="hover:text-indigo-400 transition-colors">Expertise</a>
+            <a href="#insights" className="hover:text-indigo-400 transition-colors font-bold text-indigo-300">Insights</a>
             <a href="#demo" className="hover:text-indigo-400 transition-colors">Agent Demo</a>
             <a href="#tech" className="hover:text-indigo-400 transition-colors">Stack</a>
             <a href="#contact" className="hover:text-indigo-400 transition-colors underline underline-offset-4">Contact</a>
@@ -82,6 +84,68 @@ export default function Home() {
               </p>
             </div>
             <AIDemo />
+          </div>
+        </section>
+
+        {/* AI Insights & Thought Leadership */}
+        <section id="insights" className="py-24 px-6 relative">
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none" />
+          <div className="max-w-6xl mx-auto relative">
+            <div className="flex justify-between items-end mb-12">
+              <div>
+                <h2 className="text-3xl font-bold mb-4">Architectural Insights</h2>
+                <p className="text-slate-400 max-w-2xl">Technical thought leadership on AI engineering, multi-agent systems, and the future of RAG.</p>
+              </div>
+              <div className="hidden md:block">
+                <Link href="/blog" className="text-indigo-400 hover:text-indigo-300 font-medium flex items-center gap-2 group transition-all">
+                  Browse all articles <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-8">
+              <Link href="/blog/rag-vs-long-context" className="group">
+                <article className="h-full p-8 bg-slate-900/40 border border-slate-800 rounded-2xl hover:border-indigo-500/50 transition-all flex flex-col">
+                  <div className="flex items-center gap-3 text-xs font-bold text-indigo-400 uppercase tracking-widest mb-6">
+                    <span className="px-2 py-1 bg-indigo-500/10 rounded">Architecture</span>
+                    <span className="flex items-center gap-1"><Clock size={14} /> 6 min read</span>
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4 group-hover:text-indigo-300 transition-colors leading-snug">
+                    RAG vs. Long Context: An Architect's Perspective
+                  </h3>
+                  <p className="text-slate-400 mb-8 flex-grow leading-relaxed">
+                    Is the massive context window the end of RAG? We dive deep into why modern AI orchestration still relies on robust retrieval pipelines.
+                  </p>
+                  <div className="flex items-center justify-between mt-auto pt-6 border-t border-slate-800/50">
+                    <div className="flex items-center gap-2 text-sm text-slate-500 font-medium">
+                      <Calendar size={14} /> Mar 19, 2026
+                    </div>
+                    <span className="text-indigo-400 font-bold flex items-center gap-1 text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                      Read Article <ArrowRight size={14} />
+                    </span>
+                  </div>
+                </article>
+              </Link>
+
+              <div className="space-y-6">
+                <div className="p-6 bg-slate-900/20 border border-slate-800/50 rounded-xl opacity-60">
+                  <div className="flex items-center gap-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">
+                    <span>Multi-Agent</span>
+                    <span>4 min read</span>
+                  </div>
+                  <h4 className="text-lg font-bold mb-2">Designing Self-Correction Loops in Agentic Workflows</h4>
+                  <p className="text-sm text-slate-500">Coming soon: Strategies for autonomous verification and error-handling in LLM-driven pipelines.</p>
+                </div>
+                <div className="p-6 bg-slate-900/20 border border-slate-800/50 rounded-xl opacity-60">
+                  <div className="flex items-center gap-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">
+                    <span>Performance</span>
+                    <span>5 min read</span>
+                  </div>
+                  <h4 className="text-lg font-bold mb-2">Quantization Strategies for Edge AI Architecture</h4>
+                  <p className="text-sm text-slate-500">Upcoming: Balancing precision and performance on constrained hardware for production LLMs.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
