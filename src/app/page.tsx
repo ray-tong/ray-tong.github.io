@@ -79,22 +79,22 @@ export default function Home() {
               <Brain className="text-neon-magenta" /> CORE_MODALITIES
             </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <ExpertiseCard 
+              <ExpertiseCard
                 icon={<Workflow size={24} />}
                 title="AGENTIC FLOWS"
                 description="LangGraph, OpenClaw, and custom multi-agent orchestration for complex autonomy."
               />
-              <ExpertiseCard 
+              <ExpertiseCard
                 icon={<Database size={24} />}
                 title="NEURAL RETRIEVAL"
                 description="High-performance vector pipelines with hybrid search and dynamic reranking strategies."
               />
-              <ExpertiseCard 
+              <ExpertiseCard
                 icon={<Layers size={24} />}
                 title="AI_INFRA"
                 description="Production-grade LLM deployments via Kubernetes, Docker, and scalable cloud compute."
               />
-              <ExpertiseCard 
+              <ExpertiseCard
                 icon={<Brain size={24} />}
                 title="MODEL_TUNING"
                 description="Fine-tuning, LoRA, and quantization for high-efficiency domain-specific agents."
@@ -122,7 +122,7 @@ export default function Home() {
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <BlogCard 
+              <BlogCard
                 title="RAG vs Long Context: Architecture"
                 description="Analysis of density vs context window trade-offs in scalable production systems."
                 date="2024.03.15"
@@ -130,7 +130,7 @@ export default function Home() {
                 category="ARCH"
                 slug="rag-vs-long-context"
               />
-              <BlogCard 
+              <BlogCard
                 title="The Multi-Agent Orchestration Stack"
                 description="Transitioning from static chains to dynamic planning with LangGraph and OpenClaw."
                 date="2024.02.28"
@@ -138,7 +138,7 @@ export default function Home() {
                 category="AGENT"
                 slug="multi-agent-orchestration-stack"
               />
-              <BlogCard 
+              <BlogCard
                 title="Scaling LLM Infrastructure"
                 description="Best practices for high-throughput agentic deployments on K8s."
                 date="2024.02.12"
@@ -155,7 +155,7 @@ export default function Home() {
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl font-black mb-12 text-slate-100 tracking-tighter uppercase">FEATURED_ARCHITECTURES</h2>
             <div className="grid md:grid-cols-2 gap-8">
-              <ProjectCard 
+              <ProjectCard
                 title="ENTERPRISE_RAG_CORE"
                 stack={["Python", "LangChain", "Pinecone", "Terraform"]}
                 description="High-scale RAG architecture for Fortune 500, optimized for 40% latency reduction."
@@ -165,7 +165,7 @@ export default function Home() {
                   { label: "OPS", value: "2.5K/S", icon: <Zap size={14} />, color: "text-neon-magenta" }
                 ]}
               />
-              <ProjectCard 
+              <ProjectCard
                 title="MULTI_AGENT_SYNTHESIS"
                 stack={["Next.js", "LangGraph", "OpenClaw", "FastAPI"]}
                 description="Distributed framework for autonomous literature review and synthetic data generation."
@@ -273,7 +273,7 @@ function ProjectCard({ title, description, stack, metrics }: { title: string, de
       <p className="text-slate-400 text-xs mb-8 leading-relaxed font-mono">
         {description}
       </p>
-      
+
       {metrics && (
         <div className="flex flex-wrap gap-6 mb-8 py-4 border-y border-neon-cyan/10">
           {metrics.map((m, idx) => (
