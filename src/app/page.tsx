@@ -1,5 +1,5 @@
 import { Github, Linkedin, Mail, Brain, Workflow, Database, Layers, ExternalLink, Sparkles, TrendingDown, TrendingUp, Zap, BarChart3, Scale, BookOpen, Calendar, Clock, ArrowRight } from "lucide-react";
-import { AgentDemo } from "@/components/AgentDemo";
+import AgentDemo from "@/components/AgentDemo";
 import Link from "next/link";
 
 export default function Home() {
