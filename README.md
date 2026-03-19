@@ -1,235 +1,94 @@
-# AI Architect Portfolio
+# AI Architect Portfolio — RTP Project (Ray Tong)
 
-A high-end, modern portfolio showcase for an experienced AI Architect specializing in agentic systems, advanced RAG architectures, and production-ready LLM workflows.
+A high-end, professional showcase for an **AI Architect** specializing in agentic systems, advanced RAG architectures, and production-grade LLM workflows. This project serves as a technical portfolio to demonstrate expertise in building scalable, modern AI solutions.
 
 ## 🎯 Overview
 
-This portfolio demonstrates expertise in building scalable AI systems through interactive demos, architectural case studies, and thought leadership content. Built with cutting-edge web technologies to deliver a performant, visually striking experience.
+This portfolio is designed to reflect an "AI Architect" persona. It focuses on technical depth, quantitative metrics, and interactive demonstrations of agentic behaviors. Built with a "dark mode first" aesthetic, it utilizes cutting-edge web technologies to ensure a performant and visually striking experience for visitors and potential collaborators.
 
 ## 🛠 Tech Stack
 
-### Core Framework
-- **[Next.js](https://nextjs.org/) 16.2.0** — React framework with App Router for optimal performance and SEO
-- **[React](https://react.dev/) 19.2.4** — Latest React with improved rendering and developer experience
-- **[TypeScript](https://www.typescriptlang.org/)** — Type-safe development for robust applications
+The application leverages the latest stable versions of industry-standard tools:
 
-### Styling & UI
-- **[Tailwind CSS](https://tailwindcss.com/) 4** — Utility-first CSS framework with new glow effects and animation utilities
-- **[Lucide React](https://lucide.dev/)** — Beautiful, consistent icon system
-- **Geist Fonts** — Modern typography optimized for digital displays
-
-### Deployment
-- **[GitHub Pages](https://pages.github.com/)** — Static site hosting via SSG
-- **Static Site Generation (SSG)** — Pre-rendered at build time for maximum performance
+- **[Next.js](https://nextjs.org/) 16.2.0 (App Router)** — Modern React framework for high-performance web applications.
+- **[Tailwind CSS](https://tailwindcss.com/) 4** — Utility-first CSS framework using new glow effects, advanced animations, and a simplified configuration engine.
+- **[TypeScript](https://www.typescriptlang.org/)** — Ensuring type-safe development and a robust codebase.
+- **[Lucide React](https://lucide.dev/)** — A clean and consistent icon set for professional UI design.
 
 ## 🏗 Architecture Highlights
 
 ### Static Site Generation (SSG)
 
-The application is configured for static export, enabling deployment to GitHub Pages without a server:
+To achieve maximum performance and zero-cost hosting, the project is configured for **Static Export**. All pages are pre-rendered at build time, allowing the site to be hosted directly on **GitHub Pages**.
 
-```typescript
-// next.config.ts
-export default {
-  output: "export",
-  images: {
-    unoptimized: true,
-  },
-};
-```
-
-**Benefits:**
-- Zero-cost hosting on GitHub Pages
-- Instant page loads (no server-side computation)
-- Global CDN distribution
-- Enhanced security (no server-side attack surface)
+**Key Config (`next.config.ts`):**
+- `output: "export"`: Generates a static `out/` directory.
+- `images.unoptimized: true`: Ensures images work correctly in a static environment.
 
 ### Component-Based Design
 
-The codebase follows a modular component architecture:
+The codebase follows a modular architecture, promoting reusability and clean separation of concerns:
 
-```
-src/
-├── app/
-│   ├── layout.tsx          # Root layout with fonts and metadata
-│   ├── page.tsx            # Homepage with all sections
-│   └── globals.css         # Global styles and Tailwind imports
-└── components/
-    └── AgentDemo.tsx       # Interactive agentic workflow simulator
-```
+- **`src/app/`**: Contains the App Router structure, global styles, and the main entry point.
+- **`src/components/`**: House reusable UI components (e.g., `AgentDemo`, `ProjectCards`).
+- **`AgentDemo` Component**: An interactive demonstration of multi-agent workflows, simulating task decomposition, tool calls, and result synthesis in real-time.
 
-**Key Components:**
+### CI/CD Pipeline
 
-- **`AgentDemo`** — Interactive demonstration of multi-agent workflows
-  - Simulates task decomposition, tool calls, and result synthesis
-  - Client-side component with real-time animation
-  - Showcases agentic AI concepts to visitors
-
-- **Page Sections** (in `page.tsx`):
-  - Hero with gradient effects
-  - Interactive Demo showcase
-  - Core Expertise cards
-  - Blog/Thought Leadership preview
-  - Featured Projects with metrics
-  - Tech Stack display
-  - Contact section
-
-### Tailwind CSS 4 Integration
-
-Leveraging the latest Tailwind CSS 4 features:
-
-```css
-/* New glow effects for depth */
-.glow-effect {
-  box-shadow: 0 0 20px theme('colors.indigo.500' / 0.3);
-}
-
-/* Animation utilities */
-@keyframes pulse-glow {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-```
-
-**Design Tokens:**
-- Primary palette: Slate (dark mode base) + Indigo (accent)
-- Glow effects for interactive elements
-- Smooth transitions and hover states
-- Responsive breakpoints for mobile-first design
+Automated deployment is handled via **GitHub Actions** (`.github/workflows/deploy.yml`). On every push to the `main` branch, the workflow:
+1. Sets up the Node.js environment.
+2. Installs dependencies and runs the build command.
+3. Exports the static site to the `out/` directory.
+4. Deploys the content to the `gh-pages` branch for hosting.
 
 ## 📁 Project Structure
 
-```
+```text
 ray-tong.github.io/
-├── .github/
-│   └── workflows/
-│       └── deploy.yml        # CI/CD pipeline for GitHub Pages
-├── public/                   # Static assets (images, favicon)
+├── .github/workflows/      # CI/CD: GitHub Actions (deploy.yml)
+├── public/                 # Static assets (images, logos, favicon)
 ├── src/
-│   ├── app/
-│   │   ├── layout.tsx       # Root layout configuration
-│   │   ├── page.tsx         # Main landing page
-│   │   └── globals.css      # Global styles + Tailwind
-│   └── components/
-│       └── AgentDemo.tsx    # Interactive agent workflow demo
-├── next.config.ts           # Next.js configuration (SSG export)
-├── package.json             # Dependencies and scripts
-├── tailwind.config.ts       # Tailwind customization
-├── tsconfig.json            # TypeScript configuration
-└── README.md                # This file
+│   ├── app/                # Next.js App Router (layouts, main page, globals)
+│   │   ├── layout.tsx      # Root layout and metadata
+│   │   ├── page.tsx        # Homepage (Portfolio sections)
+│   │   └── globals.css     # Global styles & Tailwind 4 imports
+│   └── components/         # Reusable UI components
+│       └── AgentDemo.tsx   # Multi-agent workflow simulation
+├── next.config.ts          # Next.js configuration (SSG setup)
+├── package.json            # Scripts and dependencies
+├── tailwind.config.ts      # Tailwind CSS customization
+└── README.md               # Application Architecture Documentation
 ```
 
 ## 🚀 Development Workflow
 
-### Local Development
+### Local Setup
 
 1. **Install dependencies:**
    ```bash
    npm install
    ```
 
-2. **Start development server:**
+2. **Run in development mode:**
    ```bash
    npm run dev
    ```
+   Access the app at [http://localhost:3000](http://localhost:3000).
 
-3. **Open browser:**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+### Build & Export
 
-### Build & Preview
-
-1. **Create production build:**
-   ```bash
-   npm run build
-   ```
-
-2. **Preview production build:**
-   ```bash
-   npm run start
-   ```
+To generate the static site locally:
+```bash
+npm run build
+```
+The static files will be located in the `out/` directory.
 
 ### Deployment
 
-The project uses **GitHub Actions** for automated deployment to GitHub Pages:
-
-**Workflow Trigger:** Push to `main` branch
-
-**Process:**
-1. GitHub Actions workflow runs on push
-2. Installs dependencies and builds the project (`npm run build`)
-3. Outputs static files to `out/` directory
-4. Deploys to GitHub Pages branch
-5. Site updates automatically at `https://ray-tong.github.io`
-
-**Manual Deployment (if needed):**
-```bash
-# Build the project
-npm run build
-
-# The 'out' directory contains the static site
-# Deploy this directory to GitHub Pages
-```
-
-## 🎨 Design Philosophy
-
-The portfolio embodies the **AI Architect** persona through:
-
-- **Dark Mode First** — Professional, technical aesthetic
-- **Data Visualization** — Quantitative metrics in project cards (latency, throughput)
-- **Interactive Demos** — Show agentic concepts, not just describe them
-- **Technical Clarity** — Stack, architecture, and decisions clearly documented
-
-## 🔧 Customization
-
-### Updating Content
-
-- **Hero Section:** Edit `src/app/page.tsx` → modify the `<section>` after `<nav>`
-- **Projects:** Update `ProjectCard` components with new work
-- **Tech Stack:** Add/remove items in the "Tech Stack" section array
-- **Contact Info:** Update footer links and email address
-
-### Styling
-
-- **Colors:** Modify `tailwind.config.ts` for custom theme
-- **Fonts:** Change font imports in `src/app/layout.tsx`
-- **Components:** Edit component files in `src/components/`
-
-## 📦 Key Dependencies
-
-```json
-{
-  "dependencies": {
-    "next": "16.2.0",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
-    "lucide-react": "^0.577.0"
-  },
-  "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
-    "typescript": "^5"
-  }
-}
-```
-
-## 🔍 Performance Considerations
-
-- **Static Export:** All pages pre-rendered at build time
-- **Optimized Images:** Configured for static export (`unoptimized: true`)
-- **Minimal JavaScript:** Client-side only for interactive components
-- **Fast Refresh:** Instant feedback during development
-- **Tree Shaking:** Unused code eliminated in production builds
-
-## 🤝 Contributing
-
-This is a personal portfolio, but suggestions and improvements are welcome via GitHub Issues and Pull Requests.
-
-## 📄 License
-
-MIT © 2026 Ray Tong. Built with Next.js & Tailwind.
+Deployment is automated via GitHub Actions. Simply push your changes to the `main` branch to trigger the production build and update the live site on GitHub Pages.
 
 ---
 
 **Architect:** [Ray Tong](https://github.com/ray-tong)  
-**Persona:** AI Architect specializing in agentic systems and production-grade LLM workflows  
-**Built:** 2026
+**Project:** RTP (Ray Tong Portfolio)  
+**Status:** Production Ready
