@@ -1,4 +1,5 @@
-import { Github, Linkedin, Mail, Brain, Workflow, Database, Layers, ExternalLink } from "lucide-react";
+import { Github, Linkedin, Mail, Brain, Workflow, Database, Layers, ExternalLink, Sparkles } from "lucide-react";
+import { AgentDemo } from "@/components/AgentDemo";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
           <div className="hidden md:flex gap-8 text-sm font-medium">
             <a href="#projects" className="hover:text-indigo-400 transition-colors">Projects</a>
             <a href="#expertise" className="hover:text-indigo-400 transition-colors">Expertise</a>
+            <a href="#demo" className="hover:text-indigo-400 transition-colors">Agent Demo</a>
             <a href="#tech" className="hover:text-indigo-400 transition-colors">Stack</a>
             <a href="#contact" className="hover:text-indigo-400 transition-colors underline underline-offset-4">Contact</a>
           </div>
@@ -35,6 +37,22 @@ export default function Home() {
                 <Github size={20} /> GitHub
               </a>
             </div>
+          </div>
+        </section>
+
+        {/* Interactive Demo Section */}
+        <section id="demo" className="py-24 px-6 relative overflow-hidden bg-slate-950">
+          <div className="absolute inset-0 bg-indigo-500/5 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] pointer-events-none" />
+          <div className="max-w-6xl mx-auto relative">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 flex items-center justify-center gap-3">
+                <Sparkles className="text-indigo-400" /> Interactive Agentic Workflow
+              </h2>
+              <p className="text-slate-400 max-w-2xl mx-auto">
+                Watch how an autonomous agent processes requests, decomposes tasks, and executes tool calls in real-time.
+              </p>
+            </div>
+            <AgentDemo />
           </div>
         </section>
 
