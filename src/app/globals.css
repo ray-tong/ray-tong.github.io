@@ -58,19 +58,21 @@ body {
   position: relative;
   
   &:hover {
-    border-color: var(--color-indigo-500);
-    box-shadow: 0 0 20px -5px var(--color-indigo-500);
+    border-color: rgba(99, 102, 241, 0.4);
+    box-shadow: 0 0 40px -10px rgba(99, 102, 241, 0.3), inset 0 0 20px -10px rgba(99, 102, 241, 0.2);
+    transform: translateY(-2px);
   }
 
   &::before {
     content: "";
     position: absolute;
-    inset: 0;
-    background: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(99, 102, 241, 0.06), transparent 40%);
+    inset: -1px;
+    background: radial-gradient(600px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(99, 102, 241, 0.15), transparent 40%);
     opacity: 0;
     transition: opacity 0.5s;
     pointer-events: none;
-    z-index: -1;
+    z-index: 10;
+    border-radius: inherit;
   }
 
   &:hover::before {

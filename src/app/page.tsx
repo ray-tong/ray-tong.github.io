@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { Github, Linkedin, Mail, Brain, Workflow, Database, Layers, ExternalLink, Sparkles, TrendingDown, TrendingUp, Zap, BarChart3, Scale, BookOpen, Calendar, Clock, ArrowRight } from "lucide-react";
-import { AgentDemo } from "@/components/AgentDemo";
+import AgentDemo from "@/components/AgentDemo";
 import { AIDemo } from "./AIDemo";
 import Link from "next/link";
 
@@ -241,27 +241,27 @@ export default function Home() {
 
 function ExpertiseCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
   return (
-    <div className="glow-card p-8 bg-slate-900/30 border border-slate-800/40 rounded-2xl transition-all group">
+    <div className="glow-card p-8 bg-slate-900/30 border border-slate-800/40 rounded-2xl transition-all group overflow-hidden">
       <div className="mb-6 text-indigo-500/80 group-hover:text-indigo-400 group-hover:scale-110 transition-all inline-block p-3 bg-indigo-500/5 rounded-xl border border-indigo-500/10">
         {icon}
       </div>
-      <h3 className="text-xl font-bold mb-3 tracking-tight group-hover:text-indigo-200 transition-colors">{title}</h3>
-      <p className="text-slate-400 text-sm leading-relaxed font-medium">{description}</p>
+      <h3 className="text-xl font-bold mb-3 tracking-tight group-hover:text-indigo-200 transition-colors relative z-20">{title}</h3>
+      <p className="text-slate-400 text-sm leading-relaxed font-medium relative z-20">{description}</p>
     </div>
   );
 }
 
 function BlogCard({ title, description, date, readTime, category, slug }: { title: string, description: string, date: string, readTime: string, category: string, slug: string }) {
   return (
-    <Link href={`/blog/${slug}`} className="flex flex-col p-6 bg-slate-900/30 border border-slate-800/50 rounded-2xl hover:border-indigo-500/50 hover:bg-slate-900/60 transition-all group">
-      <div className="flex items-center gap-3 text-[10px] uppercase font-bold tracking-widest text-indigo-400 mb-4">
+    <Link href={`/blog/${slug}`} className="glow-card flex flex-col p-6 bg-slate-900/30 border border-slate-800/50 rounded-2xl hover:bg-slate-900/60 transition-all group overflow-hidden">
+      <div className="flex items-center gap-3 text-[10px] uppercase font-bold tracking-widest text-indigo-400 mb-4 relative z-20">
         <span className="px-2 py-1 bg-indigo-500/10 border border-indigo-500/20 rounded">{category}</span>
       </div>
-      <h3 className="text-xl font-bold mb-3 group-hover:text-indigo-400 transition-colors leading-snug">{title}</h3>
-      <p className="text-slate-400 text-sm mb-6 flex-grow leading-relaxed line-clamp-2">
+      <h3 className="text-xl font-bold mb-3 group-hover:text-indigo-400 transition-colors leading-snug relative z-20">{title}</h3>
+      <p className="text-slate-400 text-sm mb-6 flex-grow leading-relaxed line-clamp-2 relative z-20">
         {description}
       </p>
-      <div className="flex items-center gap-4 text-slate-500 text-xs font-medium border-t border-slate-800/50 pt-4">
+      <div className="flex items-center gap-4 text-slate-500 text-xs font-medium border-t border-slate-800/50 pt-4 relative z-20">
         <div className="flex items-center gap-1.5">
           <Calendar size={14} />
           <span>{date}</span>
@@ -285,36 +285,38 @@ interface Metric {
 function ProjectCard({ title, description, stack, metrics }: { title: string, description: string, stack: string[], metrics?: Metric[] }) {
   return (
     <div className="glow-card group relative overflow-hidden rounded-2xl border border-slate-800/50 bg-slate-900/30 p-10 hover:shadow-2xl transition-all">
-      <div className="flex justify-between items-start mb-8">
-        <h3 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-slate-100 to-slate-400 bg-clip-text text-transparent group-hover:from-white group-hover:to-indigo-300 transition-all">{title}</h3>
-        <div className="p-2 bg-slate-800/50 rounded-lg group-hover:bg-indigo-500/20 group-hover:text-indigo-400 transition-all">
-          <ExternalLink size={20} className="text-slate-500" />
+      <div className="relative z-20">
+        <div className="flex justify-between items-start mb-8">
+          <h3 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-slate-100 to-slate-400 bg-clip-text text-transparent group-hover:from-white group-hover:to-indigo-300 transition-all">{title}</h3>
+          <div className="p-2 bg-slate-800/50 rounded-lg group-hover:bg-indigo-500/20 group-hover:text-indigo-400 transition-all">
+            <ExternalLink size={20} className="text-slate-500" />
+          </div>
         </div>
-      </div>
-      <p className="text-slate-400 mb-10 leading-relaxed font-medium">
-        {description}
-      </p>
-      
-      {metrics && (
-        <div className="flex flex-wrap gap-6 mb-8 py-4 border-y border-slate-800/50">
-          {metrics.map((m, idx) => (
-            <div key={idx} className="flex flex-col gap-1">
-              <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">{m.label}</span>
-              <div className="flex items-center gap-1.5">
-                <span className={m.color}>{m.icon}</span>
-                <span className="text-lg font-mono font-bold">{m.value}</span>
+        <p className="text-slate-400 mb-10 leading-relaxed font-medium">
+          {description}
+        </p>
+        
+        {metrics && (
+          <div className="flex flex-wrap gap-6 mb-8 py-4 border-y border-slate-800/50">
+            {metrics.map((m, idx) => (
+              <div key={idx} className="flex flex-col gap-1">
+                <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">{m.label}</span>
+                <div className="flex items-center gap-1.5">
+                  <span className={m.color}>{m.icon}</span>
+                  <span className="text-lg font-mono font-bold">{m.value}</span>
+                </div>
               </div>
-            </div>
+            ))}
+          </div>
+        )}
+
+        <div className="flex flex-wrap gap-2">
+          {stack.map(s => (
+            <span key={s} className="text-[10px] uppercase tracking-wider font-black px-3 py-1 bg-indigo-500/5 text-indigo-400/80 rounded-full border border-indigo-500/10 group-hover:border-indigo-500/30 transition-colors">
+              {s}
+            </span>
           ))}
         </div>
-      )}
-
-      <div className="flex flex-wrap gap-2">
-        {stack.map(s => (
-          <span key={s} className="text-[10px] uppercase tracking-wider font-black px-3 py-1 bg-indigo-500/5 text-indigo-400/80 rounded-full border border-indigo-500/10 group-hover:border-indigo-500/30 transition-colors">
-            {s}
-          </span>
-        ))}
       </div>
     </div>
   );
