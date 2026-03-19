@@ -1,6 +1,5 @@
-import { Github, Linkedin, Mail, Brain, Workflow, Database, Layers, ExternalLink, Sparkles, TrendingDown, TrendingUp, Zap, BarChart3, BookOpen, Calendar, Clock, ArrowRight } from "lucide-react";
-import { AgentDemo } from "@/components/AgentDemo";
-import Link from "next/link";
+import { Github, Linkedin, Mail, Brain, Workflow, Database, Layers, ExternalLink, TrendingDown, TrendingUp, Zap, BarChart3 } from "lucide-react";
+import { AIDemo } from "./AIDemo";
 
 export default function Home() {
   return (
@@ -12,7 +11,6 @@ export default function Home() {
           <div className="hidden md:flex gap-8 text-sm font-medium">
             <a href="#projects" className="hover:text-indigo-400 transition-colors">Projects</a>
             <a href="#expertise" className="hover:text-indigo-400 transition-colors">Expertise</a>
-            <a href="#blog" className="hover:text-indigo-400 transition-colors">Insights</a>
             <a href="#demo" className="hover:text-indigo-400 transition-colors">Agent Demo</a>
             <a href="#tech" className="hover:text-indigo-400 transition-colors">Stack</a>
             <a href="#contact" className="hover:text-indigo-400 transition-colors underline underline-offset-4">Contact</a>
@@ -39,22 +37,6 @@ export default function Home() {
                 <Github size={20} /> GitHub
               </a>
             </div>
-          </div>
-        </section>
-
-        {/* Interactive Demo Section */}
-        <section id="demo" className="py-24 px-6 relative overflow-hidden bg-slate-950 border-b border-slate-800/50">
-          <div className="absolute inset-0 bg-indigo-500/5 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] pointer-events-none" />
-          <div className="max-w-6xl mx-auto relative">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 flex items-center justify-center gap-3">
-                <Sparkles className="text-indigo-400" /> Interactive Agentic Workflow
-              </h2>
-              <p className="text-slate-400 max-w-2xl mx-auto">
-                Watch how an autonomous agent processes requests, decomposes tasks, and executes tool calls in real-time.
-              </p>
-            </div>
-            <AgentDemo />
           </div>
         </section>
 
@@ -89,57 +71,24 @@ export default function Home() {
           </div>
         </section>
 
-        {/* AI Insights / Blog Section */}
-        <section id="blog" className="py-24 px-6 relative overflow-hidden">
-          <div className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent pointer-events-none" />
+        {/* Interactive Demo */}
+        <section id="demo" className="py-24 px-6 border-b border-slate-800/50 relative overflow-hidden">
+          <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-indigo-500/5 to-transparent pointer-events-none" />
           <div className="max-w-6xl mx-auto">
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-16">
-              <div className="mb-6 md:mb-0">
-                <h2 className="text-3xl font-bold mb-4 flex items-center gap-3 tracking-tight">
-                  <BookOpen className="text-indigo-400" /> AI Thought Leadership
-                </h2>
-                <p className="text-slate-400 max-w-xl text-lg">
-                  Perspectives on the rapidly evolving landscape of AI architecture and production-grade agentic systems.
-                </p>
-              </div>
-              <a href="#" className="text-indigo-400 font-semibold hover:text-indigo-300 flex items-center gap-2 group transition-all">
-                View All Articles <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-              </a>
+            <div className="mb-12">
+              <h2 className="text-3xl font-bold mb-4">Inside the Agent's Mind</h2>
+              <p className="text-slate-400 max-w-2xl">
+                Experience how an AI agent decomposes a complex query into a chain of planning, tool execution, and strategic synthesis.
+              </p>
             </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <BlogCard 
-                title="RAG vs Long Context: An Architect's Perspective"
-                description="Exploring the trade-offs between dense retrieval and expanded context windows in production systems."
-                date="Mar 15, 2024"
-                readTime="8 min read"
-                category="Architecture"
-                slug="rag-vs-long-context"
-              />
-              <BlogCard 
-                title="Orchestrating Autonomous Multi-Agent Workflows"
-                description="How we transitioned from static chains to dynamic planning with LangGraph and OpenClaw."
-                date="Feb 28, 2024"
-                readTime="12 min read"
-                category="Agentic AI"
-                slug="multi-agent-orchestration-stack"
-              />
-              <BlogCard 
-                title="The Silent Killer: Evaluation in Non-Deterministic Systems"
-                description="Why traditional unit tests fail LLM applications and how to build robust evaluation loops for production agents."
-                date="Feb 12, 2024"
-                readTime="10 min read"
-                category="Engineering"
-                slug="scaling-llm-infrastructure"
-              />
-            </div>
+            <AIDemo />
           </div>
         </section>
 
         {/* Projects Preview */}
         <section id="projects" className="py-24 px-6">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold mb-12 text-slate-100 tracking-tight">Featured AI Architectures</h2>
+            <h2 className="text-3xl font-bold mb-12">Featured AI Architectures</h2>
             <div className="grid md:grid-cols-2 gap-12">
               <ProjectCard 
                 title="Enterprise RAG Orchestrator"
@@ -168,10 +117,10 @@ export default function Home() {
         {/* Tech Stack */}
         <section id="tech" className="py-24 px-6 bg-slate-900/30">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-12 tracking-tight">The Toolbelt</h2>
+            <h2 className="text-3xl font-bold mb-12">The Toolbelt</h2>
             <div className="flex flex-wrap justify-center gap-3">
               {["PyTorch", "TensorFlow", "LangChain", "LangGraph", "OpenClaw", "Pinecone", "Milvus", "Next.js", "Docker", "Kubernetes", "AWS", "GCP"].map(tech => (
-                <span key={tech} className="px-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-full text-sm font-medium text-slate-300 hover:border-indigo-500/50 transition-colors">
+                <span key={tech} className="px-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-full text-sm font-medium text-slate-300">
                   {tech}
                 </span>
               ))}
@@ -182,16 +131,16 @@ export default function Home() {
         {/* Contact */}
         <section id="contact" className="py-24 px-6 border-t border-slate-800/50">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-6 tracking-tight">Let's build the future of AI together.</h2>
-            <p className="text-slate-400 mb-10 text-lg">Available for high-stakes AI architectural consulting and strategic implementation.</p>
+            <h2 className="text-3xl font-bold mb-6">Let's build the future of AI together.</h2>
+            <p className="text-slate-400 mb-10">Available for high-stakes AI architectural consulting and strategic implementation.</p>
             <div className="flex justify-center gap-6">
-              <a href="mailto:contact@ray-tong.com" className="p-4 bg-slate-900 border border-slate-800 rounded-full hover:border-indigo-400 hover:text-indigo-400 text-slate-400 transition-all">
+              <a href="mailto:contact@ray-tong.com" className="p-4 bg-slate-900 border border-slate-800 rounded-full hover:border-indigo-400 text-indigo-400 transition-all">
                 <Mail size={24} />
               </a>
-              <a href="https://linkedin.com/in/ray-tong" className="p-4 bg-slate-900 border border-slate-800 rounded-full hover:border-indigo-400 hover:text-indigo-400 text-slate-400 transition-all">
+              <a href="https://linkedin.com/in/ray-tong" className="p-4 bg-slate-900 border border-slate-800 rounded-full hover:border-indigo-400 text-indigo-400 transition-all">
                 <Linkedin size={24} />
               </a>
-              <a href="https://github.com/ray-tong" className="p-4 bg-slate-900 border border-slate-800 rounded-full hover:border-indigo-400 hover:text-indigo-400 text-slate-400 transition-all">
+              <a href="https://github.com/ray-tong" className="p-4 bg-slate-900 border border-slate-800 rounded-full hover:border-indigo-400 text-indigo-400 transition-all">
                 <Github size={24} />
               </a>
             </div>
@@ -218,30 +167,6 @@ function ExpertiseCard({ icon, title, description }: { icon: React.ReactNode, ti
   );
 }
 
-function BlogCard({ title, description, date, readTime, category, slug }: { title: string, description: string, date: string, readTime: string, category: string, slug: string }) {
-  return (
-    <Link href={`/blog/${slug}`} className="flex flex-col p-6 bg-slate-900/30 border border-slate-800/50 rounded-2xl hover:border-indigo-500/50 hover:bg-slate-900/60 transition-all group">
-      <div className="flex items-center gap-3 text-[10px] uppercase font-bold tracking-widest text-indigo-400 mb-4">
-        <span className="px-2 py-1 bg-indigo-500/10 border border-indigo-500/20 rounded">{category}</span>
-      </div>
-      <h3 className="text-xl font-bold mb-3 group-hover:text-indigo-400 transition-colors leading-snug">{title}</h3>
-      <p className="text-slate-400 text-sm mb-6 flex-grow leading-relaxed line-clamp-2">
-        {description}
-      </p>
-      <div className="flex items-center gap-4 text-slate-500 text-xs font-medium border-t border-slate-800/50 pt-4">
-        <div className="flex items-center gap-1.5">
-          <Calendar size={14} />
-          <span>{date}</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <Clock size={14} />
-          <span>{readTime}</span>
-        </div>
-      </div>
-    </Link>
-  );
-}
-
 interface Metric {
   label: string;
   value: string;
@@ -261,7 +186,7 @@ function ProjectCard({ title, description, stack, metrics }: { title: string, de
       </p>
       
       {metrics && (
-        <div className="flex flex-wrap gap-6 mb-8 py-4 border-y border-slate-800/50">
+        <div className="flex gap-6 mb-8 py-4 border-y border-slate-800/50">
           {metrics.map((m, idx) => (
             <div key={idx} className="flex flex-col gap-1">
               <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">{m.label}</span>
