@@ -1,4 +1,4 @@
-import { Github, Linkedin, Mail, Brain, Workflow, Database, Layers, ExternalLink, Calendar, Clock, ArrowRight, MessageSquare } from "lucide-react";
+import { Github, Linkedin, Mail, Brain, Workflow, Database, Layers, ExternalLink, Calendar, Clock, ArrowRight, TrendingDown, TrendingUp, Zap, BarChart3 } from "lucide-react";
 import { AIDemo } from "./AIDemo";
 import Link from "next/link";
 
@@ -158,11 +158,21 @@ export default function Home() {
                 title="Enterprise RAG Orchestrator"
                 stack={["Python", "LangChain", "Pinecone", "Terraform"]}
                 description="Designed and implemented a scalable RAG architecture for a Fortune 500 company, reducing response latency by 40%."
+                metrics={[
+                  { label: "Latency", value: "-40%", icon: <TrendingDown size={14} />, color: "text-emerald-400" },
+                  { label: "Scalability", value: "+300%", icon: <TrendingUp size={14} />, color: "text-indigo-400" },
+                  { label: "Throughput", value: "2.5k req/s", icon: <Zap size={14} />, color: "text-amber-400" }
+                ]}
               />
               <ProjectCard 
                 title="Multi-Agent Research Assistant"
                 stack={["Next.js", "LangGraph", "OpenClaw", "FastAPI"]}
                 description="Built a distributed agentic framework for autonomous literature review and data synthesis."
+                metrics={[
+                  { label: "Task completion", value: "98%", icon: <BarChart3 size={14} />, color: "text-emerald-400" },
+                  { label: "Cost Efficiency", value: "+60%", icon: <TrendingUp size={14} />, color: "text-indigo-400" },
+                  { label: "Processing Speed", value: "x5", icon: <Zap size={14} />, color: "text-amber-400" }
+                ]}
               />
             </div>
           </div>
@@ -221,7 +231,14 @@ function ExpertiseCard({ icon, title, description }: { icon: React.ReactNode, ti
   );
 }
 
-function ProjectCard({ title, description, stack }: { title: string, description: string, stack: string[] }) {
+interface Metric {
+  label: string;
+  value: string;
+  icon: React.ReactNode;
+  color: string;
+}
+
+function ProjectCard({ title, description, stack, metrics }: { title: string, description: string, stack: string[], metrics?: Metric[] }) {
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/50 p-8 hover:border-indigo-500/50 transition-all">
       <div className="flex justify-between items-start mb-6">
@@ -231,6 +248,21 @@ function ProjectCard({ title, description, stack }: { title: string, description
       <p className="text-slate-400 mb-8 leading-relaxed">
         {description}
       </p>
+      
+      {metrics && (
+        <div className="flex gap-6 mb-8 py-4 border-y border-slate-800/50">
+          {metrics.map((m, idx) => (
+            <div key={idx} className="flex flex-col gap-1">
+              <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">{m.label}</span>
+              <div className="flex items-center gap-1.5">
+                <span className={m.color}>{m.icon}</span>
+                <span className="text-lg font-mono font-bold">{m.value}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       <div className="flex flex-wrap gap-2">
         {stack.map(s => (
           <span key={s} className="text-xs font-mono px-2 py-1 bg-indigo-500/10 text-indigo-300 rounded border border-indigo-500/20">
