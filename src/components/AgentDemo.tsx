@@ -29,7 +29,11 @@ type AgentStep = {
   icon?: React.ReactNode;
 };
 
-const DEMO_SCENARIO = {
+const DEMO_SCENARIO: {
+  userMessage: string;
+  steps: AgentStep[];
+  response: string;
+} = {
   userMessage: "Can you analyze the sentiment of recent market trends and suggest an investment strategy?",
   steps: [
     {
