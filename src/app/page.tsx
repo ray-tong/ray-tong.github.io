@@ -1,5 +1,6 @@
-import { Github, Linkedin, Mail, Brain, Workflow, Database, Layers, ExternalLink } from "lucide-react";
+import { Github, Linkedin, Mail, Brain, Workflow, Database, Layers, ExternalLink, TrendingDown, Zap, BarChart3, Scale, BookOpen, Calendar, Clock, ArrowRight } from "lucide-react";
 import { AIDemo } from "./AIDemo";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
           <div className="hidden md:flex gap-8 text-sm font-medium">
             <a href="#projects" className="hover:text-indigo-400 transition-colors">Projects</a>
             <a href="#expertise" className="hover:text-indigo-400 transition-colors">Expertise</a>
+            <a href="#blog" className="hover:text-indigo-400 transition-colors">Insights</a>
             <a href="#demo" className="hover:text-indigo-400 transition-colors">Agent Demo</a>
             <a href="#tech" className="hover:text-indigo-400 transition-colors">Stack</a>
             <a href="#contact" className="hover:text-indigo-400 transition-colors underline underline-offset-4">Contact</a>
@@ -71,6 +73,53 @@ export default function Home() {
           </div>
         </section>
 
+        {/* AI Insights / Blog Section */}
+        <section id="blog" className="py-24 px-6 relative overflow-hidden">
+          <div className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent pointer-events-none" />
+          <div className="max-w-6xl mx-auto">
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-16">
+              <div className="mb-6 md:mb-0">
+                <h2 className="text-3xl font-bold mb-4 flex items-center gap-3 tracking-tight">
+                  <BookOpen className="text-indigo-400" /> AI Thought Leadership
+                </h2>
+                <p className="text-slate-400 max-w-xl text-lg">
+                  Perspectives on the rapidly evolving landscape of AI architecture and production-grade agentic systems.
+                </p>
+              </div>
+              <a href="#" className="text-indigo-400 font-semibold hover:text-indigo-300 flex items-center gap-2 group transition-all">
+                View All Articles <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+              </a>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <BlogCard 
+                title="RAG vs Long Context: An Architect's Perspective"
+                description="Exploring the trade-offs between dense retrieval and expanded context windows in production systems."
+                date="Mar 15, 2024"
+                readTime="8 min read"
+                category="Architecture"
+                slug="rag-vs-long-context"
+              />
+              <BlogCard 
+                title="The Multi-Agent Orchestration Stack"
+                description="How we transitioned from static chains to dynamic planning with LangGraph and OpenClaw."
+                date="Feb 28, 2024"
+                readTime="12 min read"
+                category="Agentic AI"
+                slug="multi-agent-orchestration-stack"
+              />
+              <BlogCard 
+                title="Scaling LLM Infrastructure for Real-time Ops"
+                description="Best practices for deploying high-throughput agentic systems on Kubernetes."
+                date="Feb 12, 2024"
+                readTime="10 min read"
+                category="DevOps"
+                slug="scaling-llm-infrastructure"
+              />
+            </div>
+          </div>
+        </section>
+
         {/* Interactive Demo */}
         <section id="demo" className="py-24 px-6 border-b border-slate-800/50 relative overflow-hidden">
           <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-indigo-500/5 to-transparent pointer-events-none" />
@@ -88,17 +137,25 @@ export default function Home() {
         {/* Projects Preview */}
         <section id="projects" className="py-24 px-6">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold mb-12">Featured AI Architectures</h2>
+            <h2 className="text-3xl font-bold mb-12 text-slate-100 tracking-tight">Featured AI Architectures</h2>
             <div className="grid md:grid-cols-2 gap-12">
               <ProjectCard 
                 title="Enterprise RAG Orchestrator"
                 stack={["Python", "LangChain", "Pinecone", "Terraform"]}
                 description="Designed and implemented a scalable RAG architecture for a Fortune 500 company, reducing response latency by 40%."
+                metrics={[
+                  { icon: <TrendingDown size={14} />, label: "Latency", value: "-40%", color: "emerald" },
+                  { icon: <Zap size={14} />, label: "Throughput", value: "+2.5x", color: "amber" }
+                ]}
               />
               <ProjectCard 
                 title="Multi-Agent Research Assistant"
                 stack={["Next.js", "LangGraph", "OpenClaw", "FastAPI"]}
                 description="Built a distributed agentic framework for autonomous literature review and data synthesis."
+                metrics={[
+                  { icon: <Scale size={14} />, label: "Scalability", value: "+200%", color: "indigo" },
+                  { icon: <BarChart3 size={14} />, label: "Accuracy", value: "+15%", color: "cyan" }
+                ]}
               />
             </div>
           </div>
@@ -107,10 +164,10 @@ export default function Home() {
         {/* Tech Stack */}
         <section id="tech" className="py-24 px-6 bg-slate-900/30">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-12">The Toolbelt</h2>
+            <h2 className="text-3xl font-bold mb-12 tracking-tight">The Toolbelt</h2>
             <div className="flex flex-wrap justify-center gap-3">
               {["PyTorch", "TensorFlow", "LangChain", "LangGraph", "OpenClaw", "Pinecone", "Milvus", "Next.js", "Docker", "Kubernetes", "AWS", "GCP"].map(tech => (
-                <span key={tech} className="px-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-full text-sm font-medium text-slate-300">
+                <span key={tech} className="px-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-full text-sm font-medium text-slate-300 hover:border-indigo-500/50 transition-colors">
                   {tech}
                 </span>
               ))}
@@ -121,16 +178,16 @@ export default function Home() {
         {/* Contact */}
         <section id="contact" className="py-24 px-6 border-t border-slate-800/50">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-6">Let's build the future of AI together.</h2>
-            <p className="text-slate-400 mb-10">Available for high-stakes AI architectural consulting and strategic implementation.</p>
+            <h2 className="text-3xl font-bold mb-6 tracking-tight">Let's build the future of AI together.</h2>
+            <p className="text-slate-400 mb-10 text-lg">Available for high-stakes AI architectural consulting and strategic implementation.</p>
             <div className="flex justify-center gap-6">
-              <a href="mailto:contact@ray-tong.com" className="p-4 bg-slate-900 border border-slate-800 rounded-full hover:border-indigo-400 text-indigo-400 transition-all">
+              <a href="mailto:contact@ray-tong.com" className="p-4 bg-slate-900 border border-slate-800 rounded-full hover:border-indigo-400 hover:text-indigo-400 text-slate-400 transition-all">
                 <Mail size={24} />
               </a>
-              <a href="https://linkedin.com/in/ray-tong" className="p-4 bg-slate-900 border border-slate-800 rounded-full hover:border-indigo-400 text-indigo-400 transition-all">
+              <a href="https://linkedin.com/in/ray-tong" className="p-4 bg-slate-900 border border-slate-800 rounded-full hover:border-indigo-400 hover:text-indigo-400 text-slate-400 transition-all">
                 <Linkedin size={24} />
               </a>
-              <a href="https://github.com/ray-tong" className="p-4 bg-slate-900 border border-slate-800 rounded-full hover:border-indigo-400 text-indigo-400 transition-all">
+              <a href="https://github.com/ray-tong" className="p-4 bg-slate-900 border border-slate-800 rounded-full hover:border-indigo-400 hover:text-indigo-400 text-slate-400 transition-all">
                 <Github size={24} />
               </a>
             </div>
@@ -157,7 +214,45 @@ function ExpertiseCard({ icon, title, description }: { icon: React.ReactNode, ti
   );
 }
 
-function ProjectCard({ title, description, stack }: { title: string, description: string, stack: string[] }) {
+function BlogCard({ title, description, date, readTime, category, slug }: { title: string, description: string, date: string, readTime: string, category: string, slug: string }) {
+  return (
+    <Link href={`/blog/${slug}`} className="flex flex-col p-6 bg-slate-900/30 border border-slate-800/50 rounded-2xl hover:border-indigo-500/50 hover:bg-slate-900/60 transition-all group">
+      <div className="flex items-center gap-3 text-[10px] uppercase font-bold tracking-widest text-indigo-400 mb-4">
+        <span className="px-2 py-1 bg-indigo-500/10 border border-indigo-500/20 rounded">{category}</span>
+      </div>
+      <h3 className="text-xl font-bold mb-3 group-hover:text-indigo-400 transition-colors leading-snug">{title}</h3>
+      <p className="text-slate-400 text-sm mb-6 flex-grow leading-relaxed line-clamp-2">
+        {description}
+      </p>
+      <div className="flex items-center gap-4 text-slate-500 text-xs font-medium border-t border-slate-800/50 pt-4">
+        <div className="flex items-center gap-1.5">
+          <Calendar size={14} />
+          <span>{date}</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <Clock size={14} />
+          <span>{readTime}</span>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+interface Metric {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  color: string;
+}
+
+function ProjectCard({ title, description, stack, metrics = [] }: { title: string, description: string, stack: string[], metrics?: Metric[] }) {
+  const colorMap: Record<string, string> = {
+    emerald: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+    amber: "text-amber-400 bg-amber-500/10 border-amber-500/20",
+    indigo: "text-indigo-400 bg-indigo-500/10 border-indigo-500/20",
+    cyan: "text-cyan-400 bg-cyan-500/10 border-cyan-500/20",
+  };
+
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/50 p-8 hover:border-indigo-500/50 transition-all">
       <div className="flex justify-between items-start mb-6">
@@ -167,6 +262,18 @@ function ProjectCard({ title, description, stack }: { title: string, description
       <p className="text-slate-400 mb-8 leading-relaxed">
         {description}
       </p>
+      
+      {metrics.length > 0 && (
+        <div className="flex flex-wrap gap-4 mb-8">
+          {metrics.map((m, i) => (
+            <div key={i} className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-sm font-semibold ${colorMap[m.color] || colorMap.indigo}`}>
+              {m.icon}
+              <span>{m.value} <span className="text-[10px] uppercase opacity-70 ml-1 font-medium">{m.label}</span></span>
+            </div>
+          ))}
+        </div>
+      )}
+
       <div className="flex flex-wrap gap-2">
         {stack.map(s => (
           <span key={s} className="text-xs font-mono px-2 py-1 bg-indigo-500/10 text-indigo-300 rounded border border-indigo-500/20">
@@ -177,3 +284,5 @@ function ProjectCard({ title, description, stack }: { title: string, description
     </div>
   );
 }
+
+
