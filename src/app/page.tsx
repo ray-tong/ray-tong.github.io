@@ -1,4 +1,4 @@
-import { Github, Linkedin, Mail, Brain, Workflow, Database, Layers, ExternalLink } from "lucide-react";
+import { Github, Linkedin, Mail, Brain, Workflow, Database, Layers, ExternalLink, BookOpen, Clock, ArrowRight } from "lucide-react";
 import { AIDemo } from "./AIDemo";
 
 export default function Home() {
@@ -12,6 +12,7 @@ export default function Home() {
             <a href="#projects" className="hover:text-indigo-400 transition-colors">Projects</a>
             <a href="#expertise" className="hover:text-indigo-400 transition-colors">Expertise</a>
             <a href="#demo" className="hover:text-indigo-400 transition-colors">Agent Demo</a>
+            <a href="#insights" className="hover:text-indigo-400 transition-colors">Insights</a>
             <a href="#tech" className="hover:text-indigo-400 transition-colors">Stack</a>
             <a href="#contact" className="hover:text-indigo-400 transition-colors underline underline-offset-4">Contact</a>
           </div>
@@ -82,6 +83,49 @@ export default function Home() {
               </p>
             </div>
             <AIDemo />
+          </div>
+        </section>
+
+        {/* Insights Section */}
+        <section id="insights" className="py-24 px-6 bg-slate-900/30 border-b border-slate-800/50">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex justify-between items-end mb-12">
+              <div>
+                <h2 className="text-3xl font-bold mb-4 flex items-center gap-3">
+                  <BookOpen className="text-indigo-400" /> Architectural Insights
+                </h2>
+                <p className="text-slate-400 max-w-2xl">
+                  Thought leadership and technical deep-dives into the future of agentic AI and RAG systems.
+                </p>
+              </div>
+              <a href="#" className="hidden md:flex items-center gap-2 text-indigo-400 hover:text-indigo-300 font-semibold transition-colors">
+                View All Articles <ArrowRight size={20} />
+              </a>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-8">
+              <InsightCard 
+                title="RAG vs. Long Context: An Architect's Perspective"
+                excerpt="Analyzing the trade-offs between dense retrieval systems and the emerging trend of massive context windows in production environments."
+                date="Mar 15, 2026"
+                readTime="6 min read"
+                tag="Architecture"
+              />
+              <InsightCard 
+                title="Orchestrating Autonomous Multi-Agent Workflows"
+                excerpt="How to design resilient state machines for complex task decomposition using LangGraph and OpenClaw."
+                date="Feb 28, 2026"
+                readTime="8 min read"
+                tag="Agentic AI"
+              />
+              <InsightCard 
+                title="The Silent Killer: Evaluation in Non-Deterministic Systems"
+                excerpt="Why traditional unit tests fail LLM applications and how to build robust evaluation loops for production agents."
+                date="Feb 12, 2026"
+                readTime="5 min read"
+                tag="Engineering"
+              />
+            </div>
           </div>
         </section>
 
@@ -173,6 +217,31 @@ function ProjectCard({ title, description, stack }: { title: string, description
             {s}
           </span>
         ))}
+      </div>
+    </div>
+  );
+}
+
+function InsightCard({ title, excerpt, date, readTime, tag }: { title: string, excerpt: string, date: string, readTime: string, tag: string }) {
+  return (
+    <div className="p-8 bg-slate-900/50 border border-slate-800/50 rounded-2xl hover:border-indigo-500/50 transition-all group flex flex-col h-full">
+      <div className="flex justify-between items-center mb-6">
+        <span className="text-xs font-mono px-2 py-1 bg-indigo-500/10 text-indigo-300 rounded border border-indigo-500/20">
+          {tag}
+        </span>
+        <div className="flex items-center gap-2 text-slate-500 text-xs">
+          <Clock size={14} /> {readTime}
+        </div>
+      </div>
+      <h3 className="text-xl font-bold mb-4 group-hover:text-indigo-400 transition-colors">{title}</h3>
+      <p className="text-slate-400 text-sm leading-relaxed mb-8 flex-grow">
+        {excerpt}
+      </p>
+      <div className="flex justify-between items-center pt-6 border-t border-slate-800/50 text-xs font-medium">
+        <span className="text-slate-500">{date}</span>
+        <button className="flex items-center gap-1 text-indigo-400 group-hover:gap-2 transition-all">
+          Read More <ArrowRight size={14} />
+        </button>
       </div>
     </div>
   );
