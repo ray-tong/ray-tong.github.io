@@ -1,5 +1,5 @@
-import { Github, Linkedin, Mail, Brain, Workflow, Database, Layers, ExternalLink, TrendingDown, TrendingUp, Zap, BarChart3, Scale, BookOpen, Calendar, Clock, ArrowRight } from "lucide-react";
-import { AIDemo } from "./AIDemo";
+import { Github, Linkedin, Mail, Brain, Workflow, Database, Layers, ExternalLink, Sparkles, TrendingDown, TrendingUp, Zap, BarChart3, Scale, BookOpen, Calendar, Clock, ArrowRight } from "lucide-react";
+import { AgentDemo } from "@/components/AgentDemo";
 import Link from "next/link";
 
 export default function Home() {
@@ -39,6 +39,22 @@ export default function Home() {
                 <Github size={20} /> GitHub
               </a>
             </div>
+          </div>
+        </section>
+
+        {/* Interactive Demo Section */}
+        <section id="demo" className="py-24 px-6 relative overflow-hidden bg-slate-950 border-b border-slate-800/50">
+          <div className="absolute inset-0 bg-indigo-500/5 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] pointer-events-none" />
+          <div className="max-w-6xl mx-auto relative">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 flex items-center justify-center gap-3">
+                <Sparkles className="text-indigo-400" /> Interactive Agentic Workflow
+              </h2>
+              <p className="text-slate-400 max-w-2xl mx-auto">
+                Watch how an autonomous agent processes requests, decomposes tasks, and executes tool calls in real-time.
+              </p>
+            </div>
+            <AgentDemo />
           </div>
         </section>
 
@@ -117,20 +133,6 @@ export default function Home() {
                 slug="scaling-llm-infrastructure"
               />
             </div>
-          </div>
-        </section>
-
-        {/* Interactive Demo */}
-        <section id="demo" className="py-24 px-6 border-b border-slate-800/50 relative overflow-hidden">
-          <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-indigo-500/5 to-transparent pointer-events-none" />
-          <div className="max-w-6xl mx-auto">
-            <div className="mb-12">
-              <h2 className="text-3xl font-bold mb-4">Inside the Agent's Mind</h2>
-              <p className="text-slate-400 max-w-2xl">
-                Experience how an AI agent decomposes a complex query into a chain of planning, tool execution, and strategic synthesis.
-              </p>
-            </div>
-            <AIDemo />
           </div>
         </section>
 
