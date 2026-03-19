@@ -1,6 +1,5 @@
-import { Github, Linkedin, Mail, Brain, Workflow, Database, Layers, ExternalLink, Sparkles, TrendingDown, TrendingUp, Zap, BarChart3, Scale, BookOpen, Calendar, Clock, ArrowRight } from "lucide-react";
-import { AgentDemo } from "@/components/AgentDemo";
-import Link from "next/link";
+import { Github, Linkedin, Mail, Brain, Workflow, Database, Layers, ExternalLink, TrendingDown, TrendingUp, Zap, BarChart3 } from "lucide-react";
+import { AIDemo } from "./AIDemo";
 
 export default function Home() {
   return (
@@ -8,11 +7,10 @@ export default function Home() {
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 border-b border-slate-800/50 bg-slate-950/80 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <span className="font-bold text-xl tracking-tight uppercase">RAY TONG <span className="text-indigo-400">/ AI Architect</span></span>
+          <span className="font-bold text-xl tracking-tight">RAY TONG <span className="text-indigo-400">/ AI Architect</span></span>
           <div className="hidden md:flex gap-8 text-sm font-medium">
             <a href="#projects" className="hover:text-indigo-400 transition-colors">Projects</a>
             <a href="#expertise" className="hover:text-indigo-400 transition-colors">Expertise</a>
-            <Link href="/blog" className="hover:text-indigo-400 transition-colors font-bold text-indigo-300">Insights</Link>
             <a href="#demo" className="hover:text-indigo-400 transition-colors">Agent Demo</a>
             <a href="#tech" className="hover:text-indigo-400 transition-colors">Stack</a>
             <a href="#contact" className="hover:text-indigo-400 transition-colors underline underline-offset-4">Contact</a>
@@ -39,22 +37,6 @@ export default function Home() {
                 <Github size={20} /> GitHub
               </a>
             </div>
-          </div>
-        </section>
-
-        {/* Interactive Demo Section */}
-        <section id="demo" className="py-24 px-6 relative overflow-hidden bg-slate-950 border-b border-slate-800/50">
-          <div className="absolute inset-0 bg-indigo-500/5 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] pointer-events-none" />
-          <div className="max-w-6xl mx-auto relative">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 flex items-center justify-center gap-3">
-                <Sparkles className="text-indigo-400" /> Interactive Agentic Workflow
-              </h2>
-              <p className="text-slate-400 max-w-2xl mx-auto">
-                Watch how an autonomous agent processes requests, decomposes tasks, and executes tool calls in real-time.
-              </p>
-            </div>
-            <AgentDemo />
           </div>
         </section>
 
@@ -89,74 +71,24 @@ export default function Home() {
           </div>
         </section>
 
-        {/* AI Insights & Thought Leadership */}
-        <section id="insights" className="py-24 px-6 relative">
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none" />
-          <div className="max-w-6xl mx-auto relative">
-            <div className="flex justify-between items-end mb-12">
-              <div>
-                <h2 className="text-3xl font-bold mb-4 flex items-center gap-3 tracking-tight">
-                  <BookOpen className="text-indigo-400" /> AI Thought Leadership
-                </h2>
-                <p className="text-slate-400 max-w-2xl">Technical perspectives on AI engineering, multi-agent systems, and the future of RAG.</p>
-              </div>
-              <div className="hidden md:block">
-                <Link href="/blog" className="text-indigo-400 hover:text-indigo-300 font-medium flex items-center gap-2 group transition-all">
-                  Browse all articles <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </div>
+        {/* Interactive Demo */}
+        <section id="demo" className="py-24 px-6 border-b border-slate-800/50 relative overflow-hidden">
+          <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-indigo-500/5 to-transparent pointer-events-none" />
+          <div className="max-w-6xl mx-auto">
+            <div className="mb-12">
+              <h2 className="text-3xl font-bold mb-4">Inside the Agent's Mind</h2>
+              <p className="text-slate-400 max-w-2xl">
+                Experience how an AI agent decomposes a complex query into a chain of planning, tool execution, and strategic synthesis.
+              </p>
             </div>
-
-            <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-8">
-              <Link href="/blog/rag-vs-long-context" className="group">
-                <article className="h-full p-8 bg-slate-900/40 border border-slate-800 rounded-2xl hover:border-indigo-500/50 transition-all flex flex-col">
-                  <div className="flex items-center gap-3 text-xs font-bold text-indigo-400 uppercase tracking-widest mb-6">
-                    <span className="px-2 py-1 bg-indigo-500/10 rounded">Architecture</span>
-                    <span className="flex items-center gap-1"><Clock size={14} /> 6 min read</span>
-                  </div>
-                  <h3 className="text-2xl font-bold mb-4 group-hover:text-indigo-300 transition-colors leading-snug">
-                    RAG vs. Long Context: An Architect's Perspective
-                  </h3>
-                  <p className="text-slate-400 mb-8 flex-grow leading-relaxed">
-                    Is the massive context window the end of RAG? We dive deep into why modern AI orchestration still relies on robust retrieval pipelines.
-                  </p>
-                  <div className="flex items-center justify-between mt-auto pt-6 border-t border-slate-800/50">
-                    <div className="flex items-center gap-2 text-sm text-slate-500 font-medium">
-                      <Calendar size={14} /> Mar 19, 2026
-                    </div>
-                    <span className="text-indigo-400 font-bold flex items-center gap-1 text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                      Read Article <ArrowRight size={14} />
-                    </span>
-                  </div>
-                </article>
-              </Link>
-
-              <div className="space-y-6">
-                <div className="p-6 bg-slate-900/20 border border-slate-800/50 rounded-xl opacity-60">
-                  <div className="flex items-center gap-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">
-                    <span>Multi-Agent</span>
-                    <span>4 min read</span>
-                  </div>
-                  <h4 className="text-lg font-bold mb-2">Designing Self-Correction Loops in Agentic Workflows</h4>
-                  <p className="text-sm text-slate-500">Coming soon: Strategies for autonomous verification and error-handling in LLM-driven pipelines.</p>
-                </div>
-                <div className="p-6 bg-slate-900/20 border border-slate-800/50 rounded-xl opacity-60">
-                  <div className="flex items-center gap-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">
-                    <span>Performance</span>
-                    <span>5 min read</span>
-                  </div>
-                  <h4 className="text-lg font-bold mb-2">Quantization Strategies for Edge AI Architecture</h4>
-                  <p className="text-sm text-slate-500">Upcoming: Balancing precision and performance on constrained hardware for production LLMs.</p>
-                </div>
-              </div>
-            </div>
+            <AIDemo />
           </div>
         </section>
 
         {/* Projects Preview */}
         <section id="projects" className="py-24 px-6">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold mb-12 text-slate-100 tracking-tight">Featured AI Architectures</h2>
+            <h2 className="text-3xl font-bold mb-12">Featured AI Architectures</h2>
             <div className="grid md:grid-cols-2 gap-12">
               <ProjectCard 
                 title="Enterprise RAG Orchestrator"
@@ -185,10 +117,10 @@ export default function Home() {
         {/* Tech Stack */}
         <section id="tech" className="py-24 px-6 bg-slate-900/30">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-12 tracking-tight">The Toolbelt</h2>
+            <h2 className="text-3xl font-bold mb-12">The Toolbelt</h2>
             <div className="flex flex-wrap justify-center gap-3">
               {["PyTorch", "TensorFlow", "LangChain", "LangGraph", "OpenClaw", "Pinecone", "Milvus", "Next.js", "Docker", "Kubernetes", "AWS", "GCP"].map(tech => (
-                <span key={tech} className="px-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-full text-sm font-medium text-slate-300 hover:border-indigo-500/50 transition-colors">
+                <span key={tech} className="px-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-full text-sm font-medium text-slate-300">
                   {tech}
                 </span>
               ))}
@@ -199,16 +131,16 @@ export default function Home() {
         {/* Contact */}
         <section id="contact" className="py-24 px-6 border-t border-slate-800/50">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-6 tracking-tight">Let's build the future of AI together.</h2>
-            <p className="text-slate-400 mb-10 text-lg">Available for high-stakes AI architectural consulting and strategic implementation.</p>
+            <h2 className="text-3xl font-bold mb-6">Let's build the future of AI together.</h2>
+            <p className="text-slate-400 mb-10">Available for high-stakes AI architectural consulting and strategic implementation.</p>
             <div className="flex justify-center gap-6">
-              <a href="mailto:contact@ray-tong.com" className="p-4 bg-slate-900 border border-slate-800 rounded-full hover:border-indigo-400 hover:text-indigo-400 text-slate-400 transition-all">
+              <a href="mailto:contact@ray-tong.com" className="p-4 bg-slate-900 border border-slate-800 rounded-full hover:border-indigo-400 text-indigo-400 transition-all">
                 <Mail size={24} />
               </a>
-              <a href="https://linkedin.com/in/ray-tong" className="p-4 bg-slate-900 border border-slate-800 rounded-full hover:border-indigo-400 hover:text-indigo-400 text-slate-400 transition-all">
+              <a href="https://linkedin.com/in/ray-tong" className="p-4 bg-slate-900 border border-slate-800 rounded-full hover:border-indigo-400 text-indigo-400 transition-all">
                 <Linkedin size={24} />
               </a>
-              <a href="https://github.com/ray-tong" className="p-4 bg-slate-900 border border-slate-800 rounded-full hover:border-indigo-400 hover:text-indigo-400 text-slate-400 transition-all">
+              <a href="https://github.com/ray-tong" className="p-4 bg-slate-900 border border-slate-800 rounded-full hover:border-indigo-400 text-indigo-400 transition-all">
                 <Github size={24} />
               </a>
             </div>
@@ -254,7 +186,7 @@ function ProjectCard({ title, description, stack, metrics }: { title: string, de
       </p>
       
       {metrics && (
-        <div className="flex flex-wrap gap-6 mb-8 py-4 border-y border-slate-800/50">
+        <div className="flex gap-6 mb-8 py-4 border-y border-slate-800/50">
           {metrics.map((m, idx) => (
             <div key={idx} className="flex flex-col gap-1">
               <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">{m.label}</span>
