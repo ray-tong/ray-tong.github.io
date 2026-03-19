@@ -1,4 +1,5 @@
 import { Github, Linkedin, Mail, Brain, Workflow, Database, Layers, ExternalLink } from "lucide-react";
+import { AIDemo } from "./AIDemo";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
           <div className="hidden md:flex gap-8 text-sm font-medium">
             <a href="#projects" className="hover:text-indigo-400 transition-colors">Projects</a>
             <a href="#expertise" className="hover:text-indigo-400 transition-colors">Expertise</a>
+            <a href="#demo" className="hover:text-indigo-400 transition-colors">Agent Demo</a>
             <a href="#tech" className="hover:text-indigo-400 transition-colors">Stack</a>
             <a href="#contact" className="hover:text-indigo-400 transition-colors underline underline-offset-4">Contact</a>
           </div>
@@ -66,6 +68,20 @@ export default function Home() {
                 description="Fine-tuning and quantization strategies for domain-specific AI models."
               />
             </div>
+          </div>
+        </section>
+
+        {/* Interactive Demo */}
+        <section id="demo" className="py-24 px-6 border-b border-slate-800/50 relative overflow-hidden">
+          <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-indigo-500/5 to-transparent pointer-events-none" />
+          <div className="max-w-6xl mx-auto">
+            <div className="mb-12">
+              <h2 className="text-3xl font-bold mb-4">Inside the Agent's Mind</h2>
+              <p className="text-slate-400 max-w-2xl">
+                Experience how an AI agent decomposes a complex query into a chain of planning, tool execution, and strategic synthesis.
+              </p>
+            </div>
+            <AIDemo />
           </div>
         </section>
 
