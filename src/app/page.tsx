@@ -156,7 +156,44 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* Tech Stack */}
+        <section id="tech" className="py-24 px-6 bg-[#050505] border-t border-[#003b00]">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl font-bold mb-12 tracking-tight neon-glow text-white">THE_TOOLBELT</h2>
+            <div className="flex flex-wrap justify-center gap-3">
+              {["PyTorch", "TensorFlow", "LangChain", "LangGraph", "OpenClaw", "Pinecone", "Milvus", "Next.js", "Docker", "Kubernetes", "AWS", "GCP"].map(tech => (
+                <span key={tech} className="px-4 py-2 border border-[#003b00] rounded font-mono text-sm text-[#00ff41] bg-[#00ff41]/5 hover:border-[#00ff41] hover:bg-[#00ff41]/10 hover:shadow-[0_0_8px_rgba(0,255,65,0.2)] transition-all cursor-default">
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Contact */}
+        <section id="contact" className="py-24 px-6 border-t border-[#003b00]">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl font-bold mb-6 tracking-tight neon-glow text-white">INIT_COLLABORATION</h2>
+            <p className="text-[#00ff41]/70 mb-10 text-lg font-mono">[AVAILABLE] High-stakes AI architectural consulting and strategic implementation.</p>
+            <div className="flex justify-center gap-6">
+              <a href="mailto:contact@ray-tong.com" className="p-4 bg-[#050505] border border-[#003b00] rounded-full hover:border-[#00ff41] hover:text-[#00ff41] hover:shadow-[0_0_15px_rgba(0,255,65,0.3)] text-[#00ff41]/50 transition-all">
+                <Mail size={24} />
+              </a>
+              <a href="https://linkedin.com/in/ray-tong" className="p-4 bg-[#050505] border border-[#003b00] rounded-full hover:border-[#00ff41] hover:text-[#00ff41] hover:shadow-[0_0_15px_rgba(0,255,65,0.3)] text-[#00ff41]/50 transition-all">
+                <Linkedin size={24} />
+              </a>
+              <a href="https://github.com/ray-tong" className="p-4 bg-[#050505] border border-[#003b00] rounded-full hover:border-[#00ff41] hover:text-[#00ff41] hover:shadow-[0_0_15px_rgba(0,255,65,0.3)] text-[#00ff41]/50 transition-all">
+                <Github size={24} />
+              </a>
+            </div>
+          </div>
+        </section>
       </main>
+
+      <footer className="py-8 px-6 text-center text-sm text-[#00ff41]/30 border-t border-[#003b00] font-mono">
+        &copy; {new Date().getFullYear()} RAY TONG. [SYSTEM_BUILT] Next.js &amp; Tailwind.
+      </footer>
     </div>
   );
 }
