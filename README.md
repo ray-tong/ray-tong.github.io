@@ -1,5 +1,7 @@
 # AI Architect Portfolio — RTP Project (Ray Tong)
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 A high-end, professional showcase for an **AI Architect** specializing in agentic systems, advanced RAG architectures, and production-grade LLM workflows. This project serves as a technical portfolio to demonstrate expertise in building scalable, modern AI solutions.
 
 ## 🎯 Overview
