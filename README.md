@@ -92,3 +92,9 @@ Deployment is automated via GitHub Actions. Simply push your changes to the `mai
 **Architect:** [Ray Tong](https://github.com/ray-tong)  
 **Project:** RTP (Ray Tong Portfolio)  
 **Status:** Production Ready
+
+## 📄 License
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+
+The MIT License permits free use, modification, and distribution of this software, provided that the license and copyright notice are included in any copies or substantial portions of the software.
