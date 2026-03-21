@@ -10,7 +10,7 @@ export default function Post() {
       tags={["RAG", "LLMs", "Optimization", "Architecture"]}
       content={
         <>
-          <p className="text-xl text-indigo-200/90 leading-relaxed italic mb-8 border-l-4 border-indigo-500 pl-6 py-2 bg-indigo-500/5">
+          <p className="text-xl text-[#00ff41]/90 leading-relaxed italic mb-8 border-l-4 border-[#00ff41] pl-6 py-2 bg-[#00ff41]/5">
             As model context windows expand to millions of tokens, a common question arises: Is Retrieval-Augmented Generation (RAG) obsolete?
           </p>
 
@@ -18,7 +18,7 @@ export default function Post() {
           <p>
             With the advent of models like Gemini 1.5 Pro and GPT-4o supporting massive context windows, it is tempting to simply &quot;stuff&quot; all documentation and data into the prompt. However, from an architectural standpoint, this approach often introduces significant challenges:
           </p>
-          <ul className="list-disc pl-6 mb-8 space-y-4 text-slate-300">
+          <ul className="list-disc pl-6 mb-8 space-y-4 text-[#00ff41]/70">
             <li><strong>Latency:</strong> Processing millions of tokens is computationally expensive and slow.</li>
             <li><strong>Cost:</strong> Token usage scales linearly (or worse) with context size, leading to unsustainable operational costs.</li>
             <li><strong>Recall (Lost in the Middle):</strong> Models still struggle with &quot;needle-in-a-haystack&quot; accuracy when the context is overly cluttered with irrelevant information.</li>
@@ -29,7 +29,7 @@ export default function Post() {
             An elite AI architecture does not choose between RAG and Long Context; it integrates both. RAG serves as the <strong>efficient filter</strong>, narrowing down terabytes of data to the most relevant megabytes. Long context then provides the <strong>reasoning canvas</strong> for the model to synthesize those findings with high precision.
           </p>
           
-          <blockquote className="my-10 border-l-4 border-indigo-500 bg-indigo-500/5 px-8 py-6 rounded-r-xl italic text-lg text-slate-200">
+          <blockquote className="my-10 border-l-4 border-[#00ff41] bg-[#00ff41]/5 px-8 py-6 rounded-r-xl italic text-lg text-[#00ff41]/90">
             &quot;RAG is about efficiency and scale; Long Context is about depth and reasoning. The magic happens when they overlap.&quot;
           </blockquote>
 
@@ -37,7 +37,7 @@ export default function Post() {
           <p>
             For production-grade systems, architects should focus on:
           </p>
-          <ol className="list-decimal pl-6 mb-8 space-y-4 text-slate-300">
+          <ol className="list-decimal pl-6 mb-8 space-y-4 text-[#00ff41]/70">
             <li><strong>Semantic Compression:</strong> Using smaller, specialized models to summarize retrieved context before passing it to the reasoning LLM.</li>
             <li><strong>Multi-stage Retrieval:</strong> Combining BM25, vector search, and cross-encoder reranking to ensure only the highest quality context is used.</li>
             <li><strong>Dynamic Context Management:</strong> Automatically adjusting the context size based on the complexity of the query and the required accuracy.</li>
