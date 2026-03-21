@@ -1,5 +1,6 @@
-import { Github, Linkedin, Mail, Brain, Workflow, Database, Layers, ExternalLink, Sparkles, TrendingDown, TrendingUp, Zap, BarChart3, Scale, BookOpen, Calendar, Clock, ArrowRight } from "lucide-react";
+import { Github, Linkedin, Mail, Brain, Workflow, Database, Layers, ExternalLink, Sparkles, TrendingDown, TrendingUp, Zap, BarChart3, Scale, BookOpen, Calendar, Clock, ArrowRight, Grid3x3 } from "lucide-react";
 import AgentDemo from "@/components/AgentDemo";
+import TechStackMatrix from "@/components/TechStackMatrix";
 import Link from "next/link";
 
 export default function Home() {
@@ -15,6 +16,7 @@ export default function Home() {
             <Link href="/blog" className="hover:text-white transition-colors">INSIGHTS</Link>
             <a href="#demo" className="hover:text-white transition-colors">DEMO</a>
             <a href="#tech" className="hover:text-white transition-colors">STACK</a>
+            <a href="#matrix" className="hover:text-white transition-colors">MATRIX</a>
             <a href="#contact" className="hover:text-white transition-colors underline">CONTACT</a>
           </div>
         </div>
@@ -168,6 +170,21 @@ export default function Home() {
                 </span>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* Tech Stack Proficiency Matrix */}
+        <section id="matrix" className="py-24 px-6 bg-[#050505] border-t border-[#003b00]">
+          <div className="max-w-6xl mx-auto">
+            <div className="mb-12">
+              <h2 className="text-3xl font-bold mb-3 flex items-center gap-3 neon-glow text-white">
+                <Grid3x3 /> PROFICIENCY_MATRIX
+              </h2>
+              <p className="text-sm text-[#00ff41]/50 font-mono">
+                [SKILLS_INDEXED] Interactive grid of expertise levels and time invested per technology domain.
+              </p>
+            </div>
+            <TechStackMatrix />
           </div>
         </section>
 
